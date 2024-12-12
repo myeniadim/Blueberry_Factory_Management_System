@@ -1,0 +1,80 @@
+:root{
+    --sidebar-bg-color: #2c3e50;
+    --sidebar-text-color: #ecf0f1;
+    --sidebar-hover-bg-color: #34495e;
+    --sidebar-hover-text-color: #ecf0f1;
+    --main-bg-color: #ecf0f1;
+    --main-text-color: #2c3e50;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
+    font-family: "Space Grotesk", sans-serif;
+    font-optical-sizing: auto;
+    font-size: 1rem;
+}
+
+.sidebar{
+    width: 300px;
+    height: 100vh;
+    padding: 25px 10px;
+    background-color: var(--sidebar-bg-color);
+    color: var(--sidebar-text-color);
+}
+
+.header-sidebar img{
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+.header-sidebar{
+    text-align: center;
+}
+
+.header-sidebar h3{
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+.menu-sidebar ul{
+    list-style: none;
+    padding-left: 0;
+}
+
+.menu-sidebar{
+    margin-top: 35px;
+}
+
+.menu-sidebar ul li a{
+    display: block;
+    text-decoration: none;
+    color: var(--sidebar-text-color);
+    font-size: 16px;
+    margin-top: 10px;
+    padding: 15px 15px;
+}
+
+.menu-sidebar ul li a i{
+    padding-right: 15px;
+    font-size: 20px;
+}
+
+.menu-sidebar ul li.active a, .menu-sidebar ul li a:hover{
+    color: var(--sidebar-hover-text-color);
+    background-color: var(--sidebar-hover-bg-color);
+    transition: all 500ms;
+    border-radius: 10px;
+}
+
+main{
+    margin-left: 1rem;
+}
+
+main div{
+    text-align: center;
+}
