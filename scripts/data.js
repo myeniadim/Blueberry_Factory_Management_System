@@ -9,19 +9,21 @@ function retrieveData(dataTitle){
 }
 
 function getFarmers(){
-    const farmers = [];
+    let farmersList = [];
     try {
         let loadedFarmers = retrieveData("farmers");
         if(loadedFarmers){
             loadedFarmers.forEach(farmer => {
-                farmers.push(new Farmer(farmer.id, farmer.name, farmer.phoneNum, farmer.email, farmer.address, farmer.city, farmer.country, farmer.country));
+                farmersList.push(new Farmer(farmer.id, farmer.name, farmer.phoneNumber, farmer.email, farmer.address, farmer.city, farmer.country));
             });
         }
     } catch (error) {
         console.error("Error loading farmers from local storage");
     }
-    return farmers;
+    return farmersList;
 }
 
+const farmers = getFarmers();
 
-export {storeData, retrieveData, getFarmers};
+
+export {storeData, retrieveData, getFarmers, farmers};

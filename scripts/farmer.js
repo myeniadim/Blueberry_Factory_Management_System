@@ -73,8 +73,8 @@ class Farmer {
                 <td>${this.getCountry()}</td>
                 <td>
                     <div class="actions">
-                        <button class="edit-button">Edit</button>
-                        <button class="delete-button">Delete</button>
+                        <button class="edit-farmer-button" id="${this.getId()}">EDIT</button>
+                        <button class="delete-farmer-button" id="${this.getId()}">DELETE</button>
                     </div>
                 </td>
             </tr>

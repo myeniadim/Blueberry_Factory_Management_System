@@ -32,6 +32,12 @@ function populateTable(objectList, tableID){
     });
 }
 
+function updateTable(objectList, tabledID){
+    clearTable(tabledID);
+    populateTable(objectList, tabledID);
+    updateTableRowStyles(tabledID);
+}
+
 function clearTable(tableID){
     const table = document.querySelector(`#${tableID}`);
     const header = table.querySelector('tr').outerHTML; 
@@ -56,4 +62,4 @@ function updateTableRowStyles(tableId) {
     }
 }
 
-export {openDialog, closeDialog, populateTable, clearTable, addRowToTable, updateTableRowStyles};
+export {openDialog, closeDialog, populateTable, clearTable, addRowToTable, updateTableRowStyles, updateTable};
