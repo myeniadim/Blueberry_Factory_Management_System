@@ -1,6 +1,7 @@
 import {openDialog, closeDialog, populateTable, clearTable, addRowToTable, updateTableRowStyles, updateTable} from "./script.js";
 import Farmer from "./farmer.js";
-import {storeData, retrieveData, getFarmers, farmers} from "./data.js";
+import Purchase from "./purchase.js";
+import {storeData, retrieveData, getFarmers, farmers, purchases} from "./data.js";
 
 
 document.querySelectorAll(".add-object-button").forEach(button => {
@@ -41,6 +42,13 @@ function addDeleteEventListenersToButtons(){
     });
 }
 
+function updateFarmersTable(farmerList){
+    updateTable(farmerList, "farmers-table");
+    updateTableRowStyles("farmers-table");
+    addEditEventListenersToButtons();
+    addDeleteEventListenersToButtons();
+}
+
 function generateID(objectList){
     let id = 1;
     if(objectList.length > 0){
@@ -61,11 +69,12 @@ function isSameFarmer(farmer){
 }
 
 function searchFarmers(){
+    const tempFarmers = [...farmers];
     let searchInput = document.querySelector("#search-farmer").value;
-    let searchResults = farmers.filter(farmer => farmer.name.toLowerCase().includes(searchInput.toLowerCase()));
-    let searchResultsByAddress = farmers.filter(farmer => farmer.address.toLowerCase().includes(searchInput.toLowerCase()));
+    let searchResults = tempFarmers.filter(farmer => farmer.name.toLowerCase().includes(searchInput.toLowerCase()));
+    let searchResultsByAddress = tempFarmers.filter(farmer => farmer.address.toLowerCase().includes(searchInput.toLowerCase()));
     let combinedResults = [...new Set([...searchResults, ...searchResultsByAddress])];
-    updateTable(combinedResults, "farmers-table"), addEditEventListenersToButtons(), addDeleteEventListenersToButtons();
+    updateFarmersTable(combinedResults);
 }
 
 function addFarmer(event){
@@ -77,6 +86,10 @@ function addFarmer(event){
     let fCity = document.querySelector("#farmer-city").value;
     let fCountry = document.querySelector("#farmer-country").value;
     let farmer = new Farmer(generateID(farmers), fName, fPhoneNum, fMail, fAddress, fCity, fCountry, fCountry);
+    if(fName == "" || fPhoneNum == "" || fMail == "" || fAddress == "" || fCity == "" || fCountry == ""){
+        alert("All fields must be filled");
+        return;
+    }
     if (isSameFarmer(farmer)){
         alert("Farmer already exists");
         return;
@@ -108,7 +121,7 @@ function editFarmer(event){
     farmer.country = fCountry;
 
     storeData("farmers", farmers);
-    updateTable(farmers, "farmers-table"), addEditEventListenersToButtons(), addDeleteEventListenersToButtons();
+    updateFarmersTable(farmers);
     document.querySelector("#edit-farmer-dialog").close();
 }
 
@@ -116,7 +129,7 @@ function deleteFarmer(farmerID){
     const index = farmers.findIndex(f => f.id == farmerID);
     farmers.splice(index, 1);
     storeData("farmers", farmers);
-    updateTable(farmers, "farmers-table"), addEditEventListenersToButtons(), addDeleteEventListenersToButtons();
+    updateFarmersTable(farmers);
 }
 
 
@@ -135,3 +148,89 @@ updateTable(farmers, "farmers-table"), addEditEventListenersToButtons(), addDele
 
 //PURCHASE RECORDS SECTION
 
+function addPurchase(event){
+    event.preventDefault();
+    let farmerID = document.querySelector("#farmer-id").value;
+    let purchaseDate = document.querySelector("#purchase-date").value;
+    let purchaseQuantity = document.querySelector("#purchase-quantity").value;
+    let purchasePricePerKg = document.querySelector("#purchase-price-per-kg").value;
+    let farmer = farmers.find(f => f.id == farmerID);
+    let purchase = new Purchase(generateID(purchases), farmer, purchaseDate, purchaseQuantity, purchasePricePerKg);
+    if(farmer == null){
+        alert("Farmer does not exist");
+        return;
+    }
+    if(purchaseQuantity <= 0 || purchasePricePerKg <= 0){
+        alert("Quantity and price per kg must be greater than 0");
+        return;
+    }
+    if(purchaseDate == ""){
+        alert("Date must be filled");
+        return;
+    }
+    purchases.push(purchase);
+    storeData("purchases", purchases);
+    addRowToTable(purchase, "purchases-table"), addSortEventListeners();
+    updateTableRowStyles("purchases-table");
+    document.querySelector("#add-purchase-dialog").close();
+}
+
+document.querySelector("#add-purchase-button").addEventListener("click", (event) =>{
+    addPurchase(event);
+});
+
+updateTable(purchases, "purchases-table"), addSortEventListeners();
+
+function searchPurchases(){
+    const tempPurchases = [...purchases];
+    let searchInput = document.querySelector("#search-purchase").value;
+    let searchResults = tempPurchases.filter(purchase => purchase.farmer.name.toLowerCase().includes(searchInput.toLowerCase()));
+    let searchResultsByDate = tempPurchases.filter(purchase => purchase.date.includes(searchInput));
+    let combinedResults = [...new Set([...searchResults, ...searchResultsByDate])];
+    updateTable(combinedResults, "purchases-table");
+}
+
+document.querySelector("#search-purchase").addEventListener("keyup", searchPurchases);
+
+
+let lastSortedColumn = null;
+let sortOrder = 'asc';
+
+function addSortEventListeners() {
+    document.querySelectorAll(".clickable-th").forEach(button => {
+        button.addEventListener("click", function(event) {
+            if (lastSortedColumn === button.id) {
+                sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortOrder = 'asc';
+            }
+            lastSortedColumn = button.id;
+            sortPurchases(event, button.id, sortOrder);
+        });
+    });
+}
+
+function sortPurchases(event, column, order) {
+    event.preventDefault();
+    const tempPurchases = [...purchases];
+    let sortedPurchases = [];
+    if (column == "purchase-id") {
+        sortedPurchases = tempPurchases.sort((a, b) => order === 'asc' ? a.id - b.id : b.id - a.id);
+    } else if (column == "farmer-id") {
+        sortedPurchases = tempPurchases.sort((a, b) => order === 'asc' ? a.farmer.id - b.farmer.id : b.farmer.id - a.farmer.id);
+    } else if (column == "farmer-name") {
+        sortedPurchases = tempPurchases.sort((a, b) => order === 'asc' ? a.farmer.name.localeCompare(b.farmer.name) : b.farmer.name.localeCompare(a.farmer.name));
+    } else if (column == "date") {
+        sortedPurchases = tempPurchases.sort((a, b) => order === 'asc' ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date));
+    } else if (column == "quantity") {
+        sortedPurchases = tempPurchases.sort((a, b) => order === 'asc' ? a.quantity - b.quantity : b.quantity - a.quantity);
+    } else if (column == "price") {
+        sortedPurchases = tempPurchases.sort((a, b) => order === 'asc' ? a.priceperkg - b.priceperkg : b.priceperkg - a.priceperkg);
+    } else if (column == "cost") {
+        sortedPurchases = tempPurchases.sort((a, b) => order === 'asc' ? a.calculateTotalPrice() - b.calculateTotalPrice() : b.calculateTotalPrice() - a.calculateTotalPrice());
+    }
+    updateTable(sortedPurchases, "purchases-table");
+    addSortEventListeners(); 
+}
+
+addSortEventListeners(); 

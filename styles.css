@@ -253,3 +253,29 @@ dialog{
 .add form select{
     width: 98%;
 }
+
+.add form button{
+    width: 100%;
+}
+
+#sort-form{
+    display: flex;
+    gap: 1rem;
+}
+
+#sort-form .sort-area{
+    flex-basis: 5rem;
+}
+
+#sort-form .search-area{
+    flex-basis: 5rem;
+}
+
+.clickable-th{
+    cursor: pointer;
+}
+
+.clickable-th:hover{
+    background-color: #34495e;
+    color: #ecf0f1;
+}
