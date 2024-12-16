@@ -138,6 +138,7 @@ h2 {
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.5rem;
+    gap: 1rem;
 }
 
 .table-area {
@@ -278,4 +279,8 @@ dialog{
 .clickable-th:hover{
     background-color: #34495e;
     color: #ecf0f1;
+}
+
+.form-area form, .form-area button{
+    flex-shrink: 1;
 }

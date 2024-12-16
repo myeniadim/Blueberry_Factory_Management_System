@@ -47,6 +47,7 @@ function updateFarmersTable(farmerList){
     updateTableRowStyles("farmers-table");
     addEditEventListenersToButtons();
     addDeleteEventListenersToButtons();
+    updateSelectFarmerOptions();
 }
 
 function generateID(objectList){
@@ -233,4 +234,71 @@ function sortPurchases(event, column, order) {
     addSortEventListeners(); 
 }
 
-addSortEventListeners(); 
+
+//EXPENSE CALCULATION SECTION
+
+updateSelectFarmerOptions();
+
+function updateSelectFarmerOptions(){
+    let selectFarmer = document.querySelector("#select-farmer");
+    selectFarmer.innerHTML = "<option value='select'>Select Farmer</option>";
+    farmers.forEach(farmer => {
+        let option = document.createElement("option");
+        option.value = farmer.id;
+        option.textContent = " (Farmer ID: " + farmer.id + ") " + farmer.name;
+        selectFarmer.appendChild(option);
+    });
+}
+
+function calculateDatePeriod(startDate, period){
+    let date = new Date(startDate);
+    if (period == "daily"){
+        date.setDate(date.getDate() + 1);
+    } else if (period == "weekly"){
+        date.setDate(date.getDate() + 7);
+    } else if (period == "monthly"){
+        date.setMonth(date.getMonth() + 1);
+    } else if (period == "yearly"){
+        date.setFullYear(date.getFullYear() + 1);
+    }return date;
+}
+
+document.querySelector("#submit-cost-button").addEventListener("click", function(event){
+    event.preventDefault();
+    let farmerID = document.querySelector("#select-farmer").value;
+    let startDate = document.querySelector("#start-date").value;
+    let period = document.querySelector("#select-period").value;
+    let totalCost = 0;
+    if (farmerID == "select" && startDate == ""){
+        alert("Please select a farmer or enter a start date");
+        return;
+    }else if (farmerID == "select" && (startDate != "" && period == "select")){
+        alert("Please select a period");
+        return;
+    }else if (farmerID != "select" && startDate == ""){
+        alert("Please enter a start date");
+        return;
+    }else if (farmerID != "select" && (startDate != "" && period == "select")){
+        alert("Please select a period");
+        return;
+    }else if (farmerID == "select" && (startDate != "" && period != "select")){
+        console.log("clicked");
+        let endDate = calculateDatePeriod(startDate, period);
+        let filteredPurchases = purchases.filter(purchase => new Date(purchase.date) >= new Date(startDate) && new Date(purchase.date) <= endDate);
+        filteredPurchases.forEach(purchase => {
+            totalCost += purchase.calculateTotalPrice();
+        });
+        document.querySelector("#end-date").value = endDate.toISOString().split('T')[0];
+        updateTable(filteredPurchases, "calculate-purchases-table");
+        document.querySelector("#sum-of-total-cost").textContent = "Total Cost: " + totalCost + "$";
+    }else if (farmerID != "select" && (startDate != "" && period != "select")){
+        let endDate = calculateDatePeriod(startDate, period);
+        let filteredPurchases = purchases.filter(purchase => purchase.farmer.id == farmerID && new Date(purchase.date) >= new Date(startDate) && new Date(purchase.date) <= endDate);
+        filteredPurchases.forEach(purchase => {
+            totalCost += purchase.calculateTotalPrice();
+        });
+        document.querySelector("#end-date").value = endDate.toISOString().split('T')[0];
+        updateTable(filteredPurchases, "calculate-purchases-table");
+        document.querySelector("#sum-of-total-cost").textContent = "Total Cost: " + totalCost + "$";
+    }
+});

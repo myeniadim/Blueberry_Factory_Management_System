@@ -164,7 +164,52 @@
                 </div>
             </section>
             <section class="expense-section">
-                <div>aslm</div>
+                <h2>Expense Calculation</h2>
+                <div class="form-area">
+                    <form id="select-form">
+                        <label for="selectFarmer">Select Farmer:</label>
+                        <select id="select-farmer" name="select-farmer">
+                            <option value="select">Select</option>
+                        </select>
+                    </form>
+                    <form id="date-form">
+                        <label for="dateInput">Enter Start Date</label>
+                        <input type="date" id="start-date" name="start-date">
+                    </form>
+                    <form id="select-form">
+                        <label for="selectPeriod">Select Period</label>
+                        <select id="select-period" name="select-period">
+                            <option value="select">Select</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </form>
+                    <form id="date-form">
+                        <label for="dateInput">End Date:</label>
+                        <input type="date" id="end-date" name="end-date" readonly>
+                    </form>
+                    <button id="submit-cost-button" >Calculate Total Cost</button>
+                </div>
+                <div class="table-area">
+                    <table id="calculate-purchases-table">
+                        <thead>
+                            <tr>
+                                <th>Purchase ID</th>
+                                <th>Farmer ID</th>
+                                <th>Farmer Name</th>
+                                <th>Date</th>
+                                <th>Quantity</th>
+                                <th>Price per Kg</th>
+                                <th>Total Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-area" id="sum-of-total-cost"></div>
             </section>
         </div>
     </main>
