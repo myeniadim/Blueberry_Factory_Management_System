@@ -285,7 +285,7 @@ document.querySelector("#submit-cost-button").addEventListener("click", function
         console.log("clicked");
         let endDate = calculateDatePeriod(startDate, period);
         let filteredPurchases = purchases.filter(purchase => new Date(purchase.date) >= new Date(startDate) && new Date(purchase.date) <= endDate);
-        filteredPurchases.forEach(purchase => {
+        filteredPurchases.forEach(purchase => {  
             totalCost += purchase.calculateTotalPrice();
         });
         document.querySelector("#end-date").value = endDate.toISOString().split('T')[0];

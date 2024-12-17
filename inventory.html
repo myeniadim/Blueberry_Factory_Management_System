@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&family=Satisfy&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <script type="module" src="./scripts/script.js" defer></script>
+    <script type="module" src="./scripts/inventoryModule.js" defer></script>
 </head>
 
 <body>
@@ -29,9 +31,39 @@
         </div>
     </nav>
     <main>
-        <h1>Inventory Management</h1>
-        <p>Welcome to the Inventory Management section of the Blueberry Factory Management System. Here you can manage and track all inventory-related activities.</p>
-        <!-- Add your inventory management content here -->
+        <header>
+            <h1>Inventory Management Module</h1>
+            <div class="main-navbar">
+                <button class="navbar-button" id="categories-section">Categories</button>
+                <button class="navbar-button" id="categories-stock-history-section">Category Stock History</button>
+            </div>
+        </header>
+
+        <section class="categories-section">
+            <h2>Categories</h2>
+            <div class="form-area">
+                <form id="search-form">
+                    <label for="searchCategory">Search:</label>
+                    <input type="text" id="search-category" name="search-category">
+                </form>
+                <button class="add-object-button" id="add-category-dialog">CREATE NEW CATEGORY</button>
+            </div>
+            <div class="table-area">
+                <table id="categories-table">
+                    <thead>
+                        <tr>
+                            <th>ITEM ID</th>
+                            <th>TYPE</th>
+                            <th>QUANTITY STOCK</th>
+                            <th>REORDER LEVEL</th>
+                            <th>STOCK ALERT</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
     </main>
 </body>
-</html></div></html>
+</html>
