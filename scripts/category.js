@@ -4,9 +4,7 @@ class Category{
         this.type = type;
         this.quantityStock = quantityStock;
         this.reorderLevel = reorderLevel;
-        this.stockDate = stockDate;
         this.stockAlert;
-        this.CategoryStockHistory = [];
     }
 
     getStockAlert(){
@@ -18,18 +16,36 @@ class Category{
         return this.stockAlert;
     }
 
+    toCardView(){
+        if (this.getStockAlert() == "Stock Alert"){
+            return `
+            <div class="card-view" id="bad">
+                <h3>${this.type} BLUEBERRIES (ITEM ID:${this.itemID})</h3>
+                <div>Stock Level: ${this.quantityStock}kg</div>
+                <div>Stock Levels are Low!</div>
+                <button class="update-stock-category-button" id="${this.itemID}">UPDATE STOCK</button>
+            </div>
+            `;
+        }else{
+            return `
+            <div class="card-view" id="good">
+                <h3>${this.type} BLUEBERRIES (ITEM ID:${this.itemID})</h3>
+                <div>Stock Level: ${this.quantityStock}kg</div>
+                <div>Stock Levels are Good!</div>
+                <button class="update-stock-category-button" id="${this.itemID}">UPDATE STOCK</button>
+            </div>
+            `;
+        }
+}
+
     toTableRow(){
         return `
             <tr>
                 <td>${this.itemID}</td>
                 <td>${this.type}</td>
-                <td>${this.quantityStock}</td>
                 <td>${this.reorderLevel}</td>
-                <td>${this.getStockAlert()}</td>
-                <td>${this.stockDate}</td>
                 <td>
                     <div class="actions">
-                        <button class="update-stock-category-button" id="${this.itemID}">UPDATE CATEGORY</button>
                         <button class="edit-category-button" id="${this.itemID}">EDIT CATEGORY</button>
                     </div>
                 </td>

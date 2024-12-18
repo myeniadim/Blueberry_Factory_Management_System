@@ -1,20 +1,7 @@
-import {openDialog, closeDialog, populateTable, clearTable, addRowToTable, updateTableRowStyles, updateTable} from "./script.js";
+import {openDialog, addRowToTable, updateTableRowStyles, updateTable, generateID, calculateDatePeriod} from "./script.js";
 import Farmer from "./farmer.js";
 import Purchase from "./purchase.js";
-import {storeData, retrieveData, getFarmers, farmers, purchases} from "./data.js";
-
-
-document.querySelectorAll(".add-object-button").forEach(button => {
-    button.addEventListener("click", function(){
-        openDialog(button.id);
-    });
-});
-
-document.querySelectorAll(".cancel-button").forEach(button => {
-    button.addEventListener("click", function(event){
-        closeDialog(event, button.id);
-    });
-});
+import {storeData, farmers, purchases, changeableDatas} from "./data.js";
 
 //FARMERS SECTION
 
@@ -50,13 +37,6 @@ function updateFarmersTable(farmerList){
     updateSelectFarmerOptions();
 }
 
-function generateID(objectList){
-    let id = 1;
-    if(objectList.length > 0){
-        id = objectList[objectList.length - 1].id + 1;
-    }
-    return id;
-}
 
 function isSameFarmer(farmer){
     return farmers.some(f => 
@@ -170,6 +150,8 @@ function addPurchase(event){
         return;
     }
     purchases.push(purchase);
+    changeableDatas.supplierStock += parseInt(purchaseQuantity);
+    storeData("changeableDatas", changeableDatas);
     storeData("purchases", purchases);
     addRowToTable(purchase, "purchases-table"), addSortEventListeners();
     updateTableRowStyles("purchases-table");
@@ -250,18 +232,6 @@ function updateSelectFarmerOptions(){
     });
 }
 
-function calculateDatePeriod(startDate, period){
-    let date = new Date(startDate);
-    if (period == "daily"){
-        date.setDate(date.getDate() + 1);
-    } else if (period == "weekly"){
-        date.setDate(date.getDate() + 7);
-    } else if (period == "monthly"){
-        date.setMonth(date.getMonth() + 1);
-    } else if (period == "yearly"){
-        date.setFullYear(date.getFullYear() + 1);
-    }return date;
-}
 
 document.querySelector("#submit-cost-button").addEventListener("click", function(event){
     event.preventDefault();
@@ -282,7 +252,6 @@ document.querySelector("#submit-cost-button").addEventListener("click", function
         alert("Please select a period");
         return;
     }else if (farmerID == "select" && (startDate != "" && period != "select")){
-        console.log("clicked");
         let endDate = calculateDatePeriod(startDate, period);
         let filteredPurchases = purchases.filter(purchase => new Date(purchase.date) >= new Date(startDate) && new Date(purchase.date) <= endDate);
         filteredPurchases.forEach(purchase => {  

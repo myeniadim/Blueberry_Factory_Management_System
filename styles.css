@@ -7,10 +7,6 @@
     --main-text-color: #2c3e50;
 }
 
-* {
-    margin: 0;
-}
-
 
 body{
     margin: 0;
@@ -25,11 +21,14 @@ body{
 }
 
 .sidebar{
-    width: 300px;
+    width: 275px;
     height: 100vh;
     padding: 25px 10px;
     background-color: var(--sidebar-bg-color);
     color: var(--sidebar-text-color);
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 .header-sidebar img{
@@ -78,7 +77,7 @@ body{
 }
 
 main{
-    margin-left: 1rem;
+    margin-left: 275px; 
     display: flex;
     flex-direction: column;
     align-content: flex-end;
@@ -130,6 +129,12 @@ header{
 section {
     margin-bottom: 2rem;
     display: none;
+}
+
+.expense-section {
+    margin-bottom: 2rem;
+    display: none;
+    overflow-x: auto; 
 }
 
 h2 {
@@ -286,6 +291,60 @@ dialog{
     color: #ecf0f1;
 }
 
+
+
+.card-view-area{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    grid-gap: 5vh;
+}
+
+.card-view-solo-area{
+    display: grid;
+    grid-template-columns: (1, 1fr); 
+    grid-gap: 5vh;
+    justify-content: center;
+}
+
+
+.card-view{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card-view h3{
+    margin: 0;
+    padding: 0;
+}
+
+#good{
+    background-color: #2ecc71;
+}
+
+#bad{
+    background-color: #e74c3c;
+}
+
+#solo{
+    background-color: #f39c12;
+}
+
+.card-view-solo-area .card-view div{
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+datalist{
+    display: none;
+}
+
 .form-area form, .form-area button{
     flex-basis: auto;
 }
+

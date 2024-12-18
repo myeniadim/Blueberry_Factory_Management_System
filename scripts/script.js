@@ -13,6 +13,47 @@ document.querySelectorAll(".navbar-button").forEach(button => {
     });
 });
 
+document.querySelectorAll(".add-object-button").forEach(button => {
+    button.addEventListener("click", function(){
+        openDialog(button.id);
+    });
+});
+
+document.querySelectorAll(".cancel-button").forEach(button => {
+    button.addEventListener("click", function(event){
+        closeDialog(event, button.id);
+    });
+});
+
+function generateID(objectList){
+    let id = 1;
+    if(objectList.length > 0){
+        id = objectList[objectList.length - 1].id + 1;
+    }
+    return id;
+}
+
+function generateItemID(objectList){
+    let id = 1;
+    if(objectList.length > 0){
+        id = objectList[objectList.length - 1].itemID + 1;
+    }
+    return id;
+}
+
+function calculateDatePeriod(startDate, period){
+    let date = new Date(startDate);
+    if (period == "daily"){
+        date.setDate(date.getDate() + 1);
+    } else if (period == "weekly"){
+        date.setDate(date.getDate() + 7);
+    } else if (period == "monthly"){
+        date.setMonth(date.getMonth() + 1);
+    } else if (period == "yearly"){
+        date.setFullYear(date.getFullYear() + 1);
+    }return date;
+}
+
 function openDialog(dialogID){
     let dialog = document.getElementById(dialogID);
     dialog.showModal();
@@ -62,4 +103,4 @@ function updateTableRowStyles(tableId) {
     }
 }
 
-export {openDialog, closeDialog, populateTable, clearTable, addRowToTable, updateTableRowStyles, updateTable};
+export {openDialog, closeDialog, populateTable, clearTable, addRowToTable, updateTableRowStyles, updateTable, generateID, generateItemID, showSection, calculateDatePeriod};

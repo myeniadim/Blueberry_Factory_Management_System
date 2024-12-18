@@ -34,36 +34,145 @@
         <header>
             <h1>Inventory Management Module</h1>
             <div class="main-navbar">
+                <button class="navbar-button" id="categories-stock-level-section">Stock Levels</button>
                 <button class="navbar-button" id="categories-section">Categories</button>
                 <button class="navbar-button" id="categories-stock-history-section">Category Stock History</button>
             </div>
         </header>
 
-        <section class="categories-section">
-            <h2>Categories</h2>
-            <div class="form-area">
-                <form id="search-form">
-                    <label for="searchCategory">Search:</label>
-                    <input type="text" id="search-category" name="search-category">
+        <div class="main-content">
+
+            <dialog class="add" id="update-category-stock-dialog">
+                <form id="update-category-stock-form">
+                    <h2>Update Stock Level</h2>
+                    <label for="update-category-type">Category Type:</label>
+                    <input type="text" id="update-category-type" name="update-category-type" readonly>
+                    <label for="update-stock-date">Enter Stock Date:</label>
+                    <input type="date" id="update-stock-date" name="stock-date" required>
+                    <label for="current-stock-level">Current Stock Level:</label>
+                    <input type="number" id="current-stock-level" name="current-stock-level" readonly>
+                    <label for="stock-level">Enter how many kilograms of blueberries to add:</label>
+                    <input type="number" id="stock-level" name="stock-level" required>
+                    <div class="add-buttons">
+                        <button type="submit" id="update-category-stock-button">UPDATE STOCK</button>
+                        <button type="button" class="cancel-button" id="update-category-stock-dialog">CANCEL</button>
+                    </div>
                 </form>
-                <button class="add-object-button" id="add-category-dialog">CREATE NEW CATEGORY</button>
-            </div>
-            <div class="table-area">
-                <table id="categories-table">
-                    <thead>
-                        <tr>
-                            <th>ITEM ID</th>
-                            <th>TYPE</th>
-                            <th>QUANTITY STOCK</th>
-                            <th>REORDER LEVEL</th>
-                            <th>STOCK ALERT</th>
-                            <th>ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </section>
+            </dialog>
+
+            <section class="categories-stock-level-section">
+                <div class="supplier-stock-level-area">
+                    <h2>Stock Level From Supplier</h2>
+                    <div class="card-view-solo-area">
+                        <div class="card-view" id="solo">
+                        </div>
+                    </div>
+                </div>
+                <div class="stock-level-area">
+                    <h2>Stock Levels of Categories</h2>
+                    <div class="card-view-area">
+                    </div>
+                </section>
+            <dialog class="add" id="add-category-dialog">
+                <form id="add-category-form">
+                    <h2>Add New Category</h2>
+                    <label for="category-type">Category Type:</label>
+                    <input type="text" id="category-type" name="category-type" required>
+                    <label for="stock-date">Stock Date</label>
+                    <input type="date" id="stock-date" name="stock-date" required>
+                    <label for="reorder-level">Reorder Level:</label>
+                    <input type="number" id="reorder-level" name="reorder-level" required>
+                    <div class="add-buttons">
+                        <button type="submit" id="add-category-button">ADD CATEGORY</button>
+                        <button type="button" class="cancel-button" id="add-category-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
+            <dialog class="add" id="edit-category-dialog">
+                <form id="edit-category-form">
+                    <h2>Edit Category</h2>
+                    <label for="edit-category-id">Category ID:</label>
+                    <input type="text" id="edit-category-id" name="edit-category-id" readonly>
+                    <label for="edit-category-type">Category Type:</label>
+                    <input type="text" id="edit-category-type" name="edit-category-type" required>
+                    <label for="edit-reorder-level">Reorder Level:</label>
+                    <input type="number" id="edit-reorder-level" name="edit-reorder-level" required>
+                    <div class="add-buttons">
+                        <button type="submit" id="edit-category-submit-button">EDIT CATEGORY</button>
+                        <button type="button" class="cancel-button" id="edit-category-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
+            <section class="categories-section">
+                <h2>Categories</h2>
+                <div class="form-area">
+                    <form id="search-form">
+                        <label for="searchCategory">Search:</label>
+                        <input type="text" id="search-category" name="search-category">
+                    </form>
+                    <button class="add-object-button" id="add-category-dialog">CREATE NEW CATEGORY</button>
+                </div>
+                <div class="table-area">
+                    <table id="categories-table">
+                        <thead>
+                            <tr>
+                                <th>ITEM ID</th>
+                                <th>TYPE</th>
+                                <th>REORDER LEVEL</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="categories-stock-history-section">
+                <h2>Categories Stock History</h2>
+                <div class="form-area" id="stock-history-form-area">
+                    <form id="select-from">
+                        <label for="stock-history-category-type">Category Type:</label>
+                        <input list="category-type-list" id="stock-history-category-type" name="stock-history-category-type">
+                        <datalist id="category-type-list">
+                        </datalist>
+                    </form>
+                    <form id="date-form">
+                        <label for="dateInput">Enter Start Date</label>
+                        <input type="date" id="start-date" name="start-date">
+                    </form>
+                    <form id="select-form">
+                        <label for="selectPeriod">Select Period</label>
+                        <select id="select-period" name="select-period">
+                            <option value="select">Select</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </form>
+                    <form id="date-form">
+                        <label for="dateInput">End Date:</label>
+                        <input type="date" id="end-date" name="end-date" readonly>
+                    </form>
+                    <button id="submit-filter-button">Filter History</button>
+                    <button id="clear-filter-button">Clear Filter</button>
+                </div>
+                <div class="table-area">
+                    <table id="category-stock-history-table">
+                        <thead>
+                            <tr>
+                                <th>Stock ID</th>
+                                <th>ITEM ID</th>
+                                <th>TYPE</th>
+                                <th>STOCK LEVEL</th>
+                                <th>STOCK TYPE</th>
+                                <th>STOCK DATE</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </main>
 </body>
 </html>
