@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&family=Satisfy&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
     <script type="module" src="./scripts/script.js" defer></script>
+    <script type="module" src="./scripts/productModule.js" defer></script>
 </head>
 
 <body>
@@ -44,9 +45,13 @@
                 <div class="categories-stock-level-area">
                     <h2>Stock Levels Of Categories</h2>
                     <div class="form-area">
-                        <form id="search-form">
-                            <label for="searchCategory">Search:</label>
-                            <input type="text" id="searchCategory" name="searchCategory" placeholder="Search Category">
+                        <form id="select-form">
+                            <label for="selectCategory">SHOW:</label>
+                            <select name="select-category" id="select-category">
+                                <option value="all">ALL</option>
+                                <option value="low">LOW STOCK</option>
+                                <option value="high">HIGH STOCK</option>
+                            </select>
                         </form>
                     </div>
                     <div class="stock-level-area">
@@ -57,9 +62,13 @@
                 <div class="products-stock-level-area">
                     <h2>Stock Levels Of Products</h2>
                     <div class="form-area">
-                        <form id="search-form">
-                            <label for="searchProductStock">Search:</label>
-                            <input type="text" id="search-product-stock" name="search-product-stock" placeholder="Search Product">
+                        <form id="select-form">
+                            <label for="selectCategory">SHOW:</label>
+                            <select name="select-product" id="select-product">
+                                <option value="all">ALL</option>
+                                <option value="low">LOW STOCK</option>
+                                <option value="high">HIGH STOCK</option>
+                            </select>
                         </form>
                     </div>
                     <div class="stock-level-area">
@@ -69,6 +78,26 @@
                 </div>
             </section>
 
+
+            <dialog class="add" id="add-product-dialog">
+                <form id="add-category-form">
+                    <h2>Add New Product</h2>
+                    <label for="product-category">Product Category:</label>
+                    <input list="category-list" id="product-category" name="product-category">
+                    <datalist id="category-list">
+                    </datalist>
+                    <label for="product-name">Product Name:</label>
+                    <input type="text" id="product-name" name="product-name" placeholder="Product Name">
+                    <label for="product-weight">Product Weight:</label>
+                    <input type="number" id="product-weight" name="product-weight" placeholder="Product Weight">
+                    <label for="reorder-alert-level">Reorder Alert Level:</label>
+                    <input type="number" id="reorder-alert-level" name="reorder-alert-level" placeholder="Reorder Alert Level">
+                    <div class="add-buttons">
+                        <button class="submit-button" id="add-product-submit-button">ADD PRODUCT</button>
+                        <button class="cancel-button" id="add-product-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
             <section class="products-section">
                 <h2>Products</h2>
                 <div class="form-area">
@@ -83,9 +112,10 @@
                         <thead>
                             <tr>
                                 <th>Product ID</th>
-                                <th>Product Name</th>
                                 <th>Product Category</th>
+                                <th>Product Name</th> 
                                 <th>Product Weight</th>
+                                <th>Product Price</th>
                                 <th>Reorder Alert Level</th>
                                 <th>Actions</th>
                             </tr>
@@ -96,53 +126,51 @@
                 </div>
             </section>
 
+            <dialog class="add" id="filter-product-history-dialog">
+                <form id="select-from">
+                    <h2>Filter Product Stock History</h2>
+                    <label for="products-stock-history-category-type">Category Type:</label>
+                    <input list="category-type-list" id="products-stock-history-category-type" name="stock-history-category-type">
+                    <datalist id="category-type-list">
+                    </datalist>
+                    <label for="products-stock-history-product-type">Product Name:</label>
+                    <input list="category-type-list" id="products-stock-history-product-type" name="products-stock-history-product-type">
+                    <datalist id="category-type-list">
+                    </datalist>
+                    <label for="dateInput">Enter Start Date</label>
+                    <input type="date" id="start-date" name="start-date">
+                    <label for="selectPeriod">Select Period</label>
+                    <select id="select-period" name="select-period">
+                        <option value="select">Select</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                    <label for="dateInput">End Date:</label>
+                    <input type="date" id="end-date" name="end-date" readonly>
+                    <div class="add-buttons">
+                        <button id="filter-product-history">FILTER</button>
+                        <button class="cancel-button" id="filter-product-history-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
             <section class="products-stock-history-section">
                 <h2>Product Stock History</h2>
                 <div class="form-area" id="stock-history-form-area">
-                    <form id="select-from">
-                        <label for="products-stock-history-category-type">Category Type:</label>
-                        <input list="category-type-list" id="products-stock-history-category-type" name="stock-history-category-type">
-                        <datalist id="category-type-list">
-                        </datalist>
-                    </form>
-                    <form id="select-from">
-                        <label for="products-stock-history-product-type">Product Name:</label>
-                        <input list="category-type-list" id="products-stock-history-product-type" name="products-stock-history-product-type">
-                        <datalist id="category-type-list">
-                        </datalist>
-                    </form>
-                    <form id="date-form">
-                        <label for="dateInput">Enter Start Date</label>
-                        <input type="date" id="start-date" name="start-date">
-                    </form>
-                    <form id="select-form">
-                        <label for="selectPeriod">Select Period</label>
-                        <select id="select-period" name="select-period">
-                            <option value="select">Select</option>
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                    </form>
-                    <form id="date-form">
-                        <label for="dateInput">End Date:</label>
-                        <input type="date" id="end-date" name="end-date" readonly>
-                    </form>
-                    <button id="submit-filter-button">Filter History</button>
-                    <button id="clear-filter-button">Clear Filter</button>
+                    <button class="add-object-button" id="filter-product-history-dialog">FILTER HISTORY</button>
+                    <button id="clear-product-filter-button">CLEAR FILTER</button>
                 </div>
                 <div class="table-area">
                     <table>
                         <thead>
                             <tr>
                                 <th>STOCK ID</th>
-                                <th>CATEGORY ID</th>
-                                <th>CATEGORY NAME</th>
                                 <th>PRODUCT ID</th>
                                 <th>PRODUCT NAME</th>
-                                <th>STOCK NUMBER</th>
-                                <th>STOCK LEVEL</th>
+                                <th>CATEGORY ID</th>
+                                <th>CATEGORY NAME</th>
+                                <th>CHANGE OF STOCK NUMBER</th>
                                 <th>STOCK STATUS</th>
                                 <th>STOCK DATE</th>
                             </tr>
@@ -150,6 +178,9 @@
                         <tbody>
                         </tbody>
                     </table>
+                </div>
+                <div class="button-area">
+                    <button>GENERATE REPORT</button>
                 </div>
             </section>
         </div>

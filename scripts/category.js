@@ -36,7 +36,27 @@ class Category{
             </div>
             `;
         }
-}
+    }
+
+    toCardViewWithOutButtons(){
+        if (this.getStockAlert() == "Stock Alert"){
+            return `
+            <div class="card-view" id="bad">
+                <h3>${this.type} BLUEBERRIES (ITEM ID:${this.itemID})</h3>
+                <div>Stock Level: ${this.quantityStock}kg</div>
+                <div>Stock Levels are Low!</div>
+            </div>
+            `;
+        }else{
+            return `
+            <div class="card-view" id="good">
+                <h3>${this.type} BLUEBERRIES (ITEM ID:${this.itemID})</h3>
+                <div>Stock Level: ${this.quantityStock}kg</div>
+                <div>Stock Levels are Good!</div>
+            </div>
+            `;
+        }
+    }
 
     toTableRow(){
         return `
