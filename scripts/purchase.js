@@ -10,7 +10,7 @@ class Purchase{
     }
 
     calculateTotalPrice(){
-        return this.quantity * this.priceperkg;
+        return (this.quantity * this.priceperkg).toFixed(2);
     }
 
     toTableRow(){

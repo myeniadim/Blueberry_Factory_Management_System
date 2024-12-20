@@ -68,8 +68,14 @@
                         </div>
                     </div>
                 </div>
+                <h2>Stock Levels of Categories</h2>
+                <div class="form-area">
+                    <form id="search-form">
+                        <label for="searchCategory">Search:</label>
+                        <input type="text" id="search-category" name="search-category">
+                    </form>
+                </div>
                 <div class="stock-level-area">
-                    <h2>Stock Levels of Categories</h2>
                     <div class="card-view-area">
                     </div>
                 </section>
@@ -80,7 +86,7 @@
                     <input type="text" id="category-type" name="category-type" required>
                     <label for="stock-date">Stock Date</label>
                     <input type="date" id="stock-date" name="stock-date" required>
-                    <label for="reorder-level">Reorder Level:</label>
+                    <label for="reorder-level">Reorder Alert Level:</label>
                     <input type="number" id="reorder-level" name="reorder-level" required>
                     <div class="add-buttons">
                         <button type="submit" id="add-category-button">ADD CATEGORY</button>
@@ -95,7 +101,7 @@
                     <input type="text" id="edit-category-id" name="edit-category-id" readonly>
                     <label for="edit-category-type">Category Type:</label>
                     <input type="text" id="edit-category-type" name="edit-category-type" required>
-                    <label for="edit-reorder-level">Reorder Level:</label>
+                    <label for="edit-reorder-level">Reorder Alert Level:</label>
                     <input type="number" id="edit-reorder-level" name="edit-reorder-level" required>
                     <div class="add-buttons">
                         <button type="submit" id="edit-category-submit-button">EDIT CATEGORY</button>
@@ -118,7 +124,7 @@
                             <tr>
                                 <th>ITEM ID</th>
                                 <th>TYPE</th>
-                                <th>REORDER LEVEL</th>
+                                <th>Reorder Alert Level</th>
                                 <th>ACTIONS</th>
                             </tr>
                         </thead>
@@ -126,35 +132,36 @@
                     </table>
                 </div>
             </section>
+            <dialog class="add" id="filter-history-dialog">
+                <form id="filter-history-form">
+                    <h2>Filter Stock History</h2>
+                    <label for="stock-history-category-type">Category Type:</label>
+                    <input list="category-type-list" id="stock-history-category-type" name="stock-history-category-type">
+                    <datalist id="category-type-list">
+                    </datalist>
+                    <label for="dateInput">Enter Start Date</label>
+                    <input type="date" id="start-date" name="start-date">
+                    <label for="selectPeriod">Select Period</label>
+                    <select id="select-period" name="select-period">
+                        <option value="select">Select</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                    <label for="dateInput">End Date:</label>
+                    <input type="date" id="end-date" name="end-date" readonly>
+                    <div class="add-buttons">
+                        <button type="submit" class="submit-button" id="submit-filter-button">FILTER</button>
+                        <button type="button" class="cancel-button" id="filter-history-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
             <section class="categories-stock-history-section">
                 <h2>Categories Stock History</h2>
                 <div class="form-area" id="stock-history-form-area">
-                    <form id="select-from">
-                        <label for="stock-history-category-type">Category Type:</label>
-                        <input list="category-type-list" id="stock-history-category-type" name="stock-history-category-type">
-                        <datalist id="category-type-list">
-                        </datalist>
-                    </form>
-                    <form id="date-form">
-                        <label for="dateInput">Enter Start Date</label>
-                        <input type="date" id="start-date" name="start-date">
-                    </form>
-                    <form id="select-form">
-                        <label for="selectPeriod">Select Period</label>
-                        <select id="select-period" name="select-period">
-                            <option value="select">Select</option>
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                    </form>
-                    <form id="date-form">
-                        <label for="dateInput">End Date:</label>
-                        <input type="date" id="end-date" name="end-date" readonly>
-                    </form>
-                    <button id="submit-filter-button">Filter History</button>
-                    <button id="clear-filter-button">Clear Filter</button>
+                    <button class="add-object-button" id="filter-history-dialog">FILTER HISTORY</button>
+                    <button id="clear-filter-button">CLEAR FILTER</button>
                 </div>
                 <div class="table-area">
                     <table id="category-stock-history-table">
@@ -170,6 +177,9 @@
                         </thead>
                         <tbody></tbody>
                     </table>
+                </div>
+                <div class="button-area">
+                    <button>GENERATE REPORT</button>
                 </div>
             </section>
         </div>

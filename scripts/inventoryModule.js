@@ -1,4 +1,4 @@
-import {openDialog, addRowToTable, updateTableRowStyles, updateTable, generateItemID, generateID, calculateDatePeriod} from "./script.js";
+import {openDialog,closeDialog, addRowToTable, updateTableRowStyles, updateTable, generateItemID, generateID, calculateDatePeriod} from "./script.js";
 import {storeData, changeableDatas, categories, categoryStockHistory} from "./data.js";
 import Category from "./category.js";
 import CategoryStockHistory from "./categoryStockHistory.js";
@@ -22,7 +22,6 @@ function updateCategoriesInput(){
     categories.forEach(category => {
         categoryTypeList.innerHTML += `<option value="${category.type}">${category.type}</option>`;
     });
-
 }
 
 function addEditCategoryButtonListeners(){
@@ -42,7 +41,7 @@ function updateSupplierStock(){
     const cardView = document.querySelector(".card-view-solo-area .card-view");
     cardView.innerHTML = "";
     cardView.innerHTML += `
-        <h3>RAW BLUEBERRIES</h3>
+        <h3>UNCATEGORIZED BLUEBERRIES</h3>
         <div>Stock Level: ${changeableDatas.supplierStock}kg</div>
     `;
 }
@@ -157,6 +156,17 @@ document.querySelector("#search-category").addEventListener("keyup", function(){
     updateCategoriesTable(filteredCategories);
 });
 
+document.querySelector("#select-period").addEventListener("change", function(){
+    let period = document.getElementById("select-period").value;
+    let startDate = document.getElementById("start-date").value;
+    if(period != "select" && startDate != ""){
+        let endDate = calculateDatePeriod(startDate, period);
+        document.querySelector("#end-date").value = endDate.toISOString().split("T")[0];
+    }else if(period == "select"){
+        document.querySelector("#end-date").value = "";
+    }
+});
+
 
 document.querySelector("#submit-filter-button").addEventListener("click", function(event){
     event.preventDefault();
@@ -186,11 +196,15 @@ document.querySelector("#submit-filter-button").addEventListener("click", functi
         let filteredCategoryStockHistory = categoryStockHistory.filter(c => new Date(c.stockDate) >= new Date(startDate) && new Date(c.stockDate) <= new Date(endDate));
         document.querySelector("#end-date").value = endDate.toISOString().split("T")[0];
         updateTable(filteredCategoryStockHistory, "category-stock-history-table");
+        document.querySelector("#filter-history-dialog").close();
+        document.querySelector("#filter-history-form").reset();
     }else if(category != null && (startDate != "" && period != "select")){
         let endDate = calculateDatePeriod(startDate, period);
         let filteredCategoryStockHistory = categoryStockHistory.filter(c => c.Category.itemID == category.itemID && new Date(c.stockDate) >= new Date(startDate) && new Date(c.stockDate) <= new Date(endDate));
         document.querySelector("#end-date").value = endDate.toISOString().split("T")[0];
         updateTable(filteredCategoryStockHistory, "category-stock-history-table");
+        document.querySelector("#filter-history-dialog").close();
+        document.querySelector("#filter-history-form").reset();
     }
 });
 

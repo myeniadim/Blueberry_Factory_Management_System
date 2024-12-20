@@ -43,7 +43,7 @@ class Category{
             <tr>
                 <td>${this.itemID}</td>
                 <td>${this.type}</td>
-                <td>${this.reorderLevel}</td>
+                <td>${this.reorderLevel}kg</td>
                 <td>
                     <div class="actions">
                         <button class="edit-category-button" id="${this.itemID}">EDIT CATEGORY</button>

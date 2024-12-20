@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&family=Satisfy&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <script type="module" src="./scripts/script.js" defer></script>
 </head>
 
 <body>
@@ -29,9 +30,129 @@
         </div>
     </nav>
     <main>
-        <h1>Product Categorization</h1>
-        <p>Welcome to the product categorization section. Here you can manage and categorize your products.</p>
-        <!-- Add your content here -->
+        <header>
+            <h1>Product Categorization Module</h1>
+            <div class="main-navbar">
+                <button class="navbar-button" id="products-stock-level-section">Stock Levels</button>
+                <button class="navbar-button" id="products-section">Products</button>
+                <button class="navbar-button" id="products-stock-history-section">Product Stock History</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <section class="products-stock-level-section">
+                <div class="categories-stock-level-area">
+                    <h2>Stock Levels Of Categories</h2>
+                    <div class="form-area">
+                        <form id="search-form">
+                            <label for="searchCategory">Search:</label>
+                            <input type="text" id="searchCategory" name="searchCategory" placeholder="Search Category">
+                        </form>
+                    </div>
+                    <div class="stock-level-area">
+                        <div class="card-view-area">
+                        </div>
+                    </div>
+                </div>
+                <div class="products-stock-level-area">
+                    <h2>Stock Levels Of Products</h2>
+                    <div class="form-area">
+                        <form id="search-form">
+                            <label for="searchProductStock">Search:</label>
+                            <input type="text" id="search-product-stock" name="search-product-stock" placeholder="Search Product">
+                        </form>
+                    </div>
+                    <div class="stock-level-area">
+                        <div class="card-view-area">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="products-section">
+                <h2>Products</h2>
+                <div class="form-area">
+                    <form id="search-form">
+                        <label for="searchProduct">Search:</label>
+                        <input type="text" id="search-product" name="search-product" placeholder="Search Product">
+                    </form>
+                    <button class="add-object-button" id="add-product-dialog">CREATE NEW PRODUCT</button>
+                </div>
+                <div class="table-area">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Product Name</th>
+                                <th>Product Category</th>
+                                <th>Product Weight</th>
+                                <th>Reorder Alert Level</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="products-stock-history-section">
+                <h2>Product Stock History</h2>
+                <div class="form-area" id="stock-history-form-area">
+                    <form id="select-from">
+                        <label for="products-stock-history-category-type">Category Type:</label>
+                        <input list="category-type-list" id="products-stock-history-category-type" name="stock-history-category-type">
+                        <datalist id="category-type-list">
+                        </datalist>
+                    </form>
+                    <form id="select-from">
+                        <label for="products-stock-history-product-type">Product Name:</label>
+                        <input list="category-type-list" id="products-stock-history-product-type" name="products-stock-history-product-type">
+                        <datalist id="category-type-list">
+                        </datalist>
+                    </form>
+                    <form id="date-form">
+                        <label for="dateInput">Enter Start Date</label>
+                        <input type="date" id="start-date" name="start-date">
+                    </form>
+                    <form id="select-form">
+                        <label for="selectPeriod">Select Period</label>
+                        <select id="select-period" name="select-period">
+                            <option value="select">Select</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </form>
+                    <form id="date-form">
+                        <label for="dateInput">End Date:</label>
+                        <input type="date" id="end-date" name="end-date" readonly>
+                    </form>
+                    <button id="submit-filter-button">Filter History</button>
+                    <button id="clear-filter-button">Clear Filter</button>
+                </div>
+                <div class="table-area">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>STOCK ID</th>
+                                <th>CATEGORY ID</th>
+                                <th>CATEGORY NAME</th>
+                                <th>PRODUCT ID</th>
+                                <th>PRODUCT NAME</th>
+                                <th>STOCK NUMBER</th>
+                                <th>STOCK LEVEL</th>
+                                <th>STOCK STATUS</th>
+                                <th>STOCK DATE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </main>
 </body>
 </html>
