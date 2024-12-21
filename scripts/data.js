@@ -2,6 +2,8 @@ import Farmer from "./farmer.js";
 import Purchase from "./purchase.js";
 import Category from "./category.js";
 import CategoryStockHistory from "./categoryStockHistory.js";
+import Product from "./product.js";
+import ProductStockHistory from "./productStockHistory.js";
 
 function storeData(dataTitle, data){
     localStorage.setItem(dataTitle, JSON.stringify(data));
@@ -91,6 +93,42 @@ function getCategoryStockHistoryList(){
     return categoryStockHistoryList;
 }
 
+function getProductList(){
+    let categoriesList = categories;
+    let productList = [];
+    try {
+        let loadedProducts = retrieveData("products");
+        if(loadedProducts){
+            loadedProducts.forEach(product => {
+                let category = categoriesList.find(c => c.itemID == product.category.itemID);
+                productList.push(new Product(product.id, category, product.name, product.weight, product.price, product.stockNum, product.reorderLevel));
+            });
+        }
+    } catch (error) {
+        console.error("Error loading products from local storage");
+    }
+    return productList;
+}
+
+function getProductStockHistoryList(){
+    let productList = products;
+    let productStockHistoryList = [];
+    if(productList.length > 0){
+        try {
+            let loadedProductStockHistory = retrieveData("productStockHistory");
+            if(loadedProductStockHistory){
+                loadedProductStockHistory.forEach(productStockHistory => {
+                    let product = productList.find(p => p.id == productStockHistory.product.id);
+                    productStockHistoryList.push(new ProductStockHistory(productStockHistory.id, product, productStockHistory.stockAmount, productStockHistory.stockType, productStockHistory.stockDate));
+                });
+            }
+        } catch (error) {
+            console.error("Error loading product stock history from local storage");
+        }
+    }
+    return productStockHistoryList;
+}
+
 
 
 //Supplier
@@ -101,8 +139,11 @@ const changeableDatas = getChangeableDatas();
 //Inventory
 const categories = getCategoryList();
 const categoryStockHistory = getCategoryStockHistoryList();
+//Product Categorization
+const products = getProductList();
+const productStockHistory = getProductStockHistoryList();
 
 
 
 
-export {storeData, retrieveData, getFarmers, farmers, purchases, changeableDatas, categories, categoryStockHistory};
+export {storeData, retrieveData, getFarmers, farmers, purchases, changeableDatas, categories, categoryStockHistory, products, productStockHistory};

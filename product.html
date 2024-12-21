@@ -41,9 +41,29 @@
         </header>
 
         <div class="main-content">
+            <dialog class="add" id="update-product-stock-dialog">
+                <form id="update-product-stock-form">
+                    <h2>Add Product Stock</h2>
+                    <label for="update-product-id">Product ID:</label>
+                    <input type="text" id="update-product-id" name="update-product-id" readonly>
+                    <label for="update-category-name">Category Name:</label>
+                    <input type="text" id="update-category-name" name="update-category-name" readonly>
+                    <label for="update-product-name">Product Name:</label>
+                    <input type="text" id="update-product-name" name="update-product-name" readonly>
+                    <label for="update-product-stock-num">Enter Product Stock Package Number:</label>
+                    <input type="number" id="update-product-stock-num" name="update-product-stock-num">
+                    <label for="product-stock-date">Enter Stock Date</label>
+                    <input type="date" id="update-product-stock-date" name="update-product-stock-date">
+                    <div class="add-buttons">
+                        <button class="submit-button" id="update-product-stock-submit-button">UPDATE STOCK</button>
+                        <button class="cancel-button" id="update-product-stock-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
+            
             <section class="products-stock-level-section">
                 <div class="categories-stock-level-area">
-                    <h2>Stock Levels Of Categories</h2>
+                    <h2>STOCK LEVELS OF UNPACKAGED CATEGORIES</h2>
                     <div class="form-area">
                         <form id="select-form">
                             <label for="selectCategory">SHOW:</label>
@@ -55,7 +75,7 @@
                         </form>
                     </div>
                     <div class="stock-level-area">
-                        <div class="card-view-area">
+                        <div class="card-view-area" id="category-stock-level-area">
                         </div>
                     </div>
                 </div>
@@ -72,7 +92,7 @@
                         </form>
                     </div>
                     <div class="stock-level-area">
-                        <div class="card-view-area">
+                        <div class="card-view-area" id="product-stock-level-area">
                         </div>
                     </div>
                 </div>
@@ -90,11 +110,59 @@
                     <input type="text" id="product-name" name="product-name" placeholder="Product Name">
                     <label for="product-weight">Product Weight:</label>
                     <input type="number" id="product-weight" name="product-weight" placeholder="Product Weight">
+                    <label for="product-price">Product Price:</label>
+                    <input type="number" id="product-price" name="product-price" placeholder="Product Price">
                     <label for="reorder-alert-level">Reorder Alert Level:</label>
                     <input type="number" id="reorder-alert-level" name="reorder-alert-level" placeholder="Reorder Alert Level">
+                    <label for="product-stock-date">Enter Date</label>
+                    <input type="date" id="product-stock-date" name="product-stock-date">
                     <div class="add-buttons">
                         <button class="submit-button" id="add-product-submit-button">ADD PRODUCT</button>
                         <button class="cancel-button" id="add-product-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
+            <dialog class="add" id="edit-product-dialog">
+                <form id="edit-category-form">
+                    <h2>Edit Product</h2>
+                    <h3>WARNING: IF YOU CHANGE THE PACKAGE WEIGHT, PREVIOUS PACKAGE STOCKS WILL BE DELETED AND ADDED TO UNPACKAGED CATEGORY STOCKS.</h3>
+                    <label for="edit-product-id">Product ID:</label>
+                    <input type="text" id="edit-product-id" name="edit-product-id" readonly>
+                    <label for="edit-product-category">Product Category:</label>
+                    <input list="category-list" id="edit-product-category" name="edit-product-category">
+                    <datalist id="category-list">
+                    </datalist>
+                    <label for="edit-product-name">Product Name:</label>
+                    <input type="text" id="edit-product-name" name="edit-product-name" placeholder="Product Name">
+                    <label for="edit-product-weight">Product Weight:</label>
+                    <input type="number" id="edit-product-weight" name="edit-product-weight" placeholder="Product Weight">
+                    <label for="edit-product-price">Product Price:</label>
+                    <input type="number" id="edit-product-price" name="edit-product-price" placeholder="Product Price">
+                    <label for="edit-reorder-alert-level">Reorder Alert Level:</label>
+                    <input type="number" id="edit-reorder-alert-level" name="edit-reorder-alert-level" placeholder="Reorder Alert Level">
+                    <label for="edit-product-stock-date">Enter Date</label>
+                    <input type="date" id="edit-product-stock-date" name="edit-product-stock-date">
+                    <div class="add-buttons">
+                        <button class="submit-button" id="edit-product-submit-button">EDIT PRODUCT</button>
+                        <button class="cancel-button" id="edit-product-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
+            <dialog class="add" id="delete-product-dialog">
+                <form id="delete-category-form">
+                    <h2>Delete Product</h2>
+                    <h3>WARNING: IF YOU DELETE THE PRODUCT, ALL STOCKS OF THE PRODUCT WILL BE DELETED AND ADDED TO UNPACKAGED CATEGORY STOCKS.</h3>
+                    <label for="delete-product-id">Product ID:</label>
+                    <input type="text" id="delete-product-id" name="delete-product-id" readonly>
+                    <label for="delete-product-category">Product Category:</label>
+                    <input type="text" id="delete-product-category" name="delete-product-category" readonly>
+                    <label for="delete-product-name">Product Name:</label>
+                    <input type="text" id="delete-product-name" name="delete-product-name" readonly>
+                    <label for="delete-product-stock-date">Enter Date</label>
+                    <input type="date" id="delete-product-stock-date" name="delete-product-stock-date">
+                    <div class="add-buttons">
+                        <button class="submit-button" id="delete-product-submit-button">DELETE PRODUCT</button>
+                        <button class="cancel-button" id="delete-product-dialog">CANCEL</button>
                     </div>
                 </form>
             </dialog>
@@ -103,12 +171,12 @@
                 <div class="form-area">
                     <form id="search-form">
                         <label for="searchProduct">Search:</label>
-                        <input type="text" id="search-product" name="search-product" placeholder="Search Product">
+                        <input type="text" id="search-product" name="search-product" placeholder="Search Product Name">
                     </form>
                     <button class="add-object-button" id="add-product-dialog">CREATE NEW PRODUCT</button>
                 </div>
                 <div class="table-area">
-                    <table>
+                    <table id="product-table">
                         <thead>
                             <tr>
                                 <th>Product ID</th>
@@ -162,7 +230,7 @@
                     <button id="clear-product-filter-button">CLEAR FILTER</button>
                 </div>
                 <div class="table-area">
-                    <table>
+                    <table id="product-stock-history-table">
                         <thead>
                             <tr>
                                 <th>STOCK ID</th>

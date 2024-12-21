@@ -1,4 +1,4 @@
-import {openDialog,closeDialog, addRowToTable, updateTableRowStyles, updateTable, generateItemID, generateID, calculateDatePeriod} from "./script.js";
+import {openDialog, addRowToTable, updateTableRowStyles, updateTable, generateItemID, generateID, calculateDatePeriod} from "./script.js";
 import {storeData, changeableDatas, categories, categoryStockHistory} from "./data.js";
 import Category from "./category.js";
 import CategoryStockHistory from "./categoryStockHistory.js";

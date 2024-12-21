@@ -20,7 +20,10 @@ class Category{
         if (this.getStockAlert() == "Stock Alert"){
             return `
             <div class="card-view" id="bad">
-                <h3>${this.type} BLUEBERRIES (ITEM ID:${this.itemID})</h3>
+                <div class="card-view-header">
+                    <h3>ITEM ID: ${this.itemID}</h3>
+                    <h3>${this.type.toUpperCase()} BLUEBERRIES</h3>
+                </div>
                 <div>Stock Level: ${this.quantityStock}kg</div>
                 <div>Stock Levels are Low!</div>
                 <button class="update-stock-category-button" id="${this.itemID}">UPDATE STOCK</button>
@@ -29,7 +32,10 @@ class Category{
         }else{
             return `
             <div class="card-view" id="good">
-                <h3>${this.type} BLUEBERRIES (ITEM ID:${this.itemID})</h3>
+                <div class="card-view-header">
+                    <h3>ITEM ID: ${this.itemID}</h3>
+                    <h3>${this.type.toUpperCase()} BLUEBERRIES</h3>
+                </div>
                 <div>Stock Level: ${this.quantityStock}kg</div>
                 <div>Stock Levels are Good!</div>
                 <button class="update-stock-category-button" id="${this.itemID}">UPDATE STOCK</button>
@@ -42,7 +48,10 @@ class Category{
         if (this.getStockAlert() == "Stock Alert"){
             return `
             <div class="card-view" id="bad">
-                <h3>${this.type} BLUEBERRIES (ITEM ID:${this.itemID})</h3>
+                <div class="card-view-header">
+                    <h3>ITEM ID: ${this.itemID}</h3>
+                    <h3>${this.type.toUpperCase()} BLUEBERRIES</h3>
+                </div>
                 <div>Stock Level: ${this.quantityStock}kg</div>
                 <div>Stock Levels are Low!</div>
             </div>
@@ -50,7 +59,10 @@ class Category{
         }else{
             return `
             <div class="card-view" id="good">
-                <h3>${this.type} BLUEBERRIES (ITEM ID:${this.itemID})</h3>
+                <div class="card-view-header">
+                    <h3>ITEM ID: ${this.itemID}</h3>
+                    <h3>${this.type.toUpperCase()} BLUEBERRIES</h3>
+                </div>
                 <div>Stock Level: ${this.quantityStock}kg</div>
                 <div>Stock Levels are Good!</div>
             </div>

@@ -28,16 +28,19 @@ class Product{
     }
 
     calculateTotalWeight(packageNum){
-        return (this.weight * packageNum).toFixed(2);
+        return this.weight * packageNum;
     }
 
     toCardView(){
         return `
         <div class="card-view" id="${this.getStockAlertID()}">
-            <h3>Product ID: ${this.id}</h3>
-            <h3>${this.name}(${this.weight}kg) ${this.category} BLUEBERRIES</h3>
-            <div>Stock Level: ${this.stockNum} Packages</div>
-            <div>Stock Levels are ${this.getStockAlert()}</div>
+            <div class="card-view-header">
+                <h3>Product ID: ${this.id}</h3>
+                <h3>${this.category.type.toUpperCase()} BLUEBERRIES</h3>
+                <h3>${this.name.toUpperCase()} PACKAGE (${this.weight}kg)</h3>
+            </div>
+            <div>Stock Level: <b>${this.stockNum} Packages</b></div>
+            <div>Stock Levels are <b>${this.getStockAlert()}</b></div>
             <button class="update-stock-product-button" id="${this.id}">UPDATE STOCK</button>
         </div>
         `;
@@ -51,7 +54,6 @@ class Product{
             <td>${this.name}</td>
             <td>${this.weight}kg</td>
             <td>${this.price}$</td>
-            <td>${this.stockNum}kg</td>
             <td>${this.reorderLevel} Packages</td>
             <td>
                 <button class="edit-product-button" id="${this.id}">EDIT</button>

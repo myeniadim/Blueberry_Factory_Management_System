@@ -13,7 +13,7 @@ class ProductStockHistory{
                 <td>${this.id}</td>
                 <td>${this.product.id}</td>
                 <td>${this.product.name}</td>
-                <td>${this.product.category.id}</td>
+                <td>${this.product.category.itemID}</td>
                 <td>${this.product.category.type}</td>
                 <td>${this.stockAmount} Packages</td>
                 <td>${this.stockType}</td>
@@ -22,3 +22,5 @@ class ProductStockHistory{
             `;
     }
 }
+
+export default ProductStockHistory;
