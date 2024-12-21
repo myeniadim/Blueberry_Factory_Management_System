@@ -112,7 +112,7 @@ document.querySelector("#add-product-submit-button").addEventListener("click", f
         storeData("products", products);
         addRowToTable(product, "product-table");
         updateTableRowStyles("product-table");
-        let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product, 0, "Product Created", stockDate);
+        let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product.id, product.name, product.category.itemID, product.category.type, 0, "Product Created", stockDate);
         productStockHistory.push(newProductStockHistory);
         storeData("productStockHistory", productStockHistory);
         updateTable(productStockHistory, "product-stock-history-table");
@@ -154,7 +154,7 @@ document.querySelector("#update-product-stock-submit-button").addEventListener("
         storeData("products", products);
         updateTable(products, "product-table");
         updateProductsStockView(products);
-        let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product, newStockNum, "STOCK IN", stockDate);
+        let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product.id, product.name, product.category.itemID, product.category.type, newStockNum, "STOCK IN", stockDate);
         productStockHistory.push(newProductStockHistory);
         storeData("productStockHistory", productStockHistory);
         updateTable(productStockHistory, "product-stock-history-table");
@@ -236,6 +236,10 @@ document.querySelector("#edit-product-submit-button").addEventListener("click", 
             let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category, weight, "STOCK OUT (PRODUCT UPDATED)", stockDate);
             categoryStockHistory.push(newCategoryStockHistory);
             storeData("categoryStockHistory", categoryStockHistory);
+            let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product.id, product.name, product.category.itemID, product.category.type, product.stockNum, "STOCK OUT (CHANGED PRODUCT WEIGHT)", stockDate);
+            productStockHistory.push(newProductStockHistory);
+            storeData("productStockHistory", productStockHistory);
+            updateTable(productStockHistory, "product-stock-history-table");
         }
         product.weight = productWeight; 
         product.name = productName;
@@ -277,6 +281,10 @@ document.querySelector("#delete-product-submit-button").addEventListener("click"
     let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category, weight, "STOCK IN (PRODUCT DELETED)", stockDate);
     categoryStockHistory.push(newCategoryStockHistory);
     storeData("categoryStockHistory", categoryStockHistory);
+    let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product.id, product.name, product.category.itemID, product.category.type, product.stockNum, "STOCK OUT (PRODUCT DELETED)", stockDate);
+    productStockHistory.push(newProductStockHistory);
+    storeData("productStockHistory", productStockHistory);
+    updateTable(productStockHistory, "product-stock-history-table");
     let tempProducts = products.filter(p => p.id != productID);
     storeData("products", tempProducts);
     updateTable(tempProducts, "product-table");

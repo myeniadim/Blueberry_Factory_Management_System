@@ -1,7 +1,10 @@
 class ProductStockHistory{
-    constructor(productStockHistoryId, product, stockAmount, stockType, stockDate){
+    constructor(productStockHistoryId, productId, productName, categoryId, categoryType, stockAmount, stockType, stockDate){
         this.id = productStockHistoryId;
-        this.product = product;
+        this.productId = productId;
+        this.productName = productName;
+        this.categoryId = categoryId;
+        this.categoryType = categoryType;
         this.stockAmount = stockAmount;
         this.stockType = stockType;
         this.stockDate = stockDate;
@@ -11,10 +14,10 @@ class ProductStockHistory{
         return `
             <tr>
                 <td>${this.id}</td>
-                <td>${this.product.id}</td>
-                <td>${this.product.name}</td>
-                <td>${this.product.category.itemID}</td>
-                <td>${this.product.category.type}</td>
+                <td>${this.productId}</td>
+                <td>${this.productName}</td>
+                <td>${this.categoryId}</td>
+                <td>${this.categoryType}</td>
                 <td>${this.stockAmount} Packages</td>
                 <td>${this.stockType}</td>
                 <td>${this.stockDate}</td>
