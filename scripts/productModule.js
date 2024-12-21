@@ -1,4 +1,4 @@
-import {openDialog, addRowToTable, updateTableRowStyles, updateTable, generateItemID, generateID, calculateDatePeriod} from './script.js';
+import {openDialog, addRowToTable, updateTableRowStyles, updateTable, generateItemID, generateID, calculateDatePeriod, createCSVArea} from './script.js';
 import {storeData, changeableDatas, categories, categoryStockHistory, products, productStockHistory} from './data.js';
 import Category from "./category.js";
 import CategoryStockHistory from "./categoryStockHistory.js";
@@ -7,13 +7,13 @@ import ProductStockHistory from './productStockHistory.js';
 
 function updateEveryThing(){
     updateCategories();
+    updateProducts();
     updateCategoriesStockView(categories);
     updateProductsStockView(products);
     updateProductsTable(products);
     updateTable(productStockHistory, "product-stock-history-table");
+    createCSVArea(".button-area", productStockHistory, "product_stock_history");
 }
-
-
 
 function updateCategoriesStockView(categoryList){
     const cardView = document.querySelector("#category-stock-level-area");
@@ -29,6 +29,12 @@ function updateProductsTable(productList){
     addDeleteProductButtonListeners();
 }
 
+function addRowtoProductsTable(product){
+    addRowToTable(product, "product-table");
+    updateTableRowStyles("product-table");
+    addEditProductButtonListeners();
+    addDeleteProductButtonListeners();
+}
 
 function addUpdateCategoryStockButtonListeners(){
     document.querySelectorAll(".update-stock-product-button").forEach(button => {
@@ -70,6 +76,8 @@ function addDeleteProductButtonListeners(){
 }
 
 
+
+
 function updateProductsStockView(productList){
     const cardView = document.querySelector("#product-stock-level-area");
     cardView.innerHTML = "";
@@ -86,7 +94,20 @@ function updateCategories(){
     categories.forEach(category => {
         categoryTypeList.innerHTML += `<option value="${category.type}">${category.type}</option>`;
     });
-    
+
+    const categoryTypeList2 = document.querySelector("#category-type-list");
+    categoryTypeList2.innerHTML = "";
+    categories.forEach(category => {
+        categoryTypeList2.innerHTML += `<option value="${category.type}">${category.type}</option>`;
+    });
+}
+
+function updateProducts(){
+    const productList = document.querySelector("#product-type-list");
+    productList.innerHTML = "";
+    products.forEach(product => {
+        productList.innerHTML += `<option value="${product.name}">${product.name}</option>`;
+    });
 }
 
 function isSameProduct(product){
@@ -110,12 +131,12 @@ document.querySelector("#add-product-submit-button").addEventListener("click", f
     if((category != null && productName != "" && productWeight > 0 && productPrice > 0 && reorderLevel > 0 && stockDate != "") && !isSameProduct(product)){
         products.push(product);
         storeData("products", products);
-        addRowToTable(product, "product-table");
-        updateTableRowStyles("product-table");
+        addRowtoProductsTable(product);
         let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product.id, product.name, product.category.itemID, product.category.type, 0, "Product Created", stockDate);
         productStockHistory.push(newProductStockHistory);
         storeData("productStockHistory", productStockHistory);
         updateTable(productStockHistory, "product-stock-history-table");
+        updateProductsStockView(products);
         document.querySelector("#add-product-dialog").close();
     }else{
         if (category == null) {
@@ -166,6 +187,7 @@ document.querySelector("#update-product-stock-submit-button").addEventListener("
         let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category, weight, "STOCK OUT (PACKAGED)", stockDate);
         categoryStockHistory.push(newCategoryStockHistory);
         storeData("categoryStockHistory", categoryStockHistory);
+        updateProductsTable(products);
         document.getElementById("update-product-stock-dialog").close();
 
     } else {
@@ -226,6 +248,9 @@ document.querySelector("#edit-product-submit-button").addEventListener("click", 
     let stockDate = document.getElementById("edit-product-stock-date").value;
     let isSameProduct = products.some(product => (product.id != product.id && product.category.type == categoryType && (product.name == productName || product.weight == productWeight)));
     if((categoryType != "" && productName != "" && productWeight > 0 && productPrice > 0 && reorderLevel > 0 && stockDate != "") && !isSameProduct){
+        product.name = productName;
+        product.price = productPrice;
+        product.reorderLevel = reorderLevel;
         if (product.weight != productWeight) {
             let category = categories.find(c => c.type == product.category.type);
             let weight = product.calculateTotalWeight(product.stockNum);
@@ -242,12 +267,17 @@ document.querySelector("#edit-product-submit-button").addEventListener("click", 
             updateTable(productStockHistory, "product-stock-history-table");
         }
         product.weight = productWeight; 
-        product.name = productName;
-        product.price = productPrice;
-        product.reorderLevel = reorderLevel;
+        let newProductStockHistory = productStockHistory.filter(p => p.productId == product.id && p.categoryId == product.category.itemID);
+        newProductStockHistory.forEach(p => {
+            p.productName = productName;
+            p.categoryType = categoryType;
+        });
+        storeData("productStockHistory", productStockHistory);
+        updateTable(productStockHistory, "product-stock-history-table");
         storeData("products", products);
         updateTable(products, "product-table");
         updateProductsStockView(products);
+        updateProductsTable(products);
         document.getElementById("edit-product-dialog").close();
     }else{
         if (categoryType == "") {
@@ -290,6 +320,55 @@ document.querySelector("#delete-product-submit-button").addEventListener("click"
     updateTable(tempProducts, "product-table");
     updateProductsStockView(tempProducts);
     document.getElementById("delete-product-dialog").close();
+});
+
+document.querySelector("#select-period").addEventListener("change", function(){
+    let period = document.getElementById("select-period").value;
+    let startDate = document.getElementById("start-date").value;
+    if (startDate != ""){
+        let endDate = calculateDatePeriod(startDate, period);
+        document.getElementById("end-date").value = endDate.toISOString().split("T")[0];
+    }
+});
+
+document.querySelector("#filter-product-history").addEventListener("click", function(event){
+    event.preventDefault();
+    let categoryType = document.getElementById("products-stock-history-category-type").value;
+    let productName = document.getElementById("products-stock-history-product-type").value;
+    let startDate = document.getElementById("start-date").value;
+    let period = document.getElementById("select-period").value;
+    let endDate = calculateDatePeriod(startDate, period);
+    let filteredProductStockHistory;
+    let category = categories.find(c => c.type == categoryType);
+    let product = products.find(p => p.name == productName);
+
+    if (category != null && product == null && startDate == ""){
+        filteredProductStockHistory = productStockHistory.filter(p => p.categoryId == category.itemID);
+    }else if (category != null && product != null && startDate == ""){
+        filteredProductStockHistory = productStockHistory.filter(p => p.categoryId == category.itemID && p.productId == product.id);
+    }else if (category != null && product == null && startDate != ""){
+        filteredProductStockHistory = productStockHistory.filter(p => p.categoryId == category.itemID && new Date(p.stockDate) >= new Date(startDate) && new Date(p.stockDate) <= new Date(endDate));
+    }else if (category != null && product != null && startDate != ""){
+        filteredProductStockHistory = productStockHistory.filter(p => p.categoryId == category
+        .itemID && p.productId == product.id && new Date(p.stockDate) >= new Date(startDate) && new Date(p.stockDate) <= new Date(endDate));
+    }else if (category == null && product != null && startDate == ""){
+        filteredProductStockHistory = productStockHistory.filter(p => p.productId == product.id);
+    }else if (category == null && product != null && startDate != ""){
+        filteredProductStockHistory = productStockHistory.filter(p => p.productId == product.id && new Date(p.stockDate) >= new Date(startDate) && new Date(p.stockDate) <= new Date(endDate));
+    }else if (category == null && product == null && startDate != ""){
+        filteredProductStockHistory = productStockHistory.filter(p => new Date(p.stockDate) >= new Date(startDate) && new Date(p.stockDate) <= new Date(endDate));
+    }else{
+        alert("Please select at least one filter criteria");
+    }
+    updateTable(filteredProductStockHistory, "product-stock-history-table");
+    document.getElementById("filter-product-history-dialog").close();
+    createCSVArea(".button-area", filteredProductStockHistory, "product_stock_history");
+});
+
+document.querySelector("#clear-product-filter-button").addEventListener("click", function(event){
+    event.preventDefault();
+    updateTable(productStockHistory, "product-stock-history-table");
+    createCSVArea(".button-area", productStockHistory, "product_stock_history");
 });
 
 updateEveryThing();

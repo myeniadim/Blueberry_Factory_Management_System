@@ -24,6 +24,14 @@ class ProductStockHistory{
             </tr>
             `;
     }
+
+    toCSVHeader(){
+        return "ID,Product ID,Product Name,Category ID,Category Type,Stock Amount,Stock Type,Stock Date\n";
+    }
+
+    toCSVRow(){
+        return `${this.id},${this.productId},${this.productName},${this.categoryId},${this.categoryType},${this.stockAmount} Packages,${this.stockType},${this.stockDate}\n`;
+    }
 }
 
 export default ProductStockHistory;

@@ -103,4 +103,31 @@ function updateTableRowStyles(tableId) {
     }
 }
 
-export {openDialog, closeDialog, populateTable, clearTable, addRowToTable, updateTableRowStyles, updateTable, generateID, generateItemID, showSection, calculateDatePeriod};
+function createCSVArea(btnClassName, objectList, fileName){
+    if (objectList.length > 0){
+        let buttonArea = document.querySelector(btnClassName);
+        buttonArea.innerHTML = "";
+        let downloadButton = document.createElement("button");
+        downloadButton.textContent = "Download CSV";
+        downloadButton.addEventListener("click", function() {
+            generateCSVFile(objectList, fileName);
+        });
+        buttonArea.appendChild(downloadButton);
+    }
+}
+
+function generateCSVFile(objectList, fileName){
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += objectList[0].toCSVHeader();
+    objectList.forEach(object => {
+        csvContent += object.toCSVRow();
+    });
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+}
+
+export {openDialog, closeDialog, populateTable, clearTable, addRowToTable, updateTableRowStyles, updateTable, generateID, generateItemID, showSection, calculateDatePeriod, generateCSVFile, createCSVArea};
