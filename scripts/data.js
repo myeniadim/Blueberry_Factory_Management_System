@@ -75,20 +75,16 @@ function getCategoryList(){
 }
 
 function getCategoryStockHistoryList(){
-    let categoriesList = categories;
     let categoryStockHistoryList = [];
-    if(categoriesList.length > 0){
-        try {
-            let loadedCategoryStockHistory = retrieveData("categoryStockHistory");
-            if(loadedCategoryStockHistory){
-                loadedCategoryStockHistory.forEach(categoryStockHistory => {
-                    let category = categoriesList.find(c => c.itemID == categoryStockHistory.Category.itemID);
-                    categoryStockHistoryList.push(new CategoryStockHistory(categoryStockHistory.id, category, categoryStockHistory.weight ,categoryStockHistory.stockType, categoryStockHistory.stockDate));
-                });
-            }
-        } catch (error) {
-            console.error("Error loading category stock history from local storage");
+    try {
+        let loadedCategoryStockHistory = retrieveData("categoryStockHistory");
+        if(loadedCategoryStockHistory){
+            loadedCategoryStockHistory.forEach(categoryStockHistory => {
+                categoryStockHistoryList.push(new CategoryStockHistory(categoryStockHistory.id, categoryStockHistory.categoryId, categoryStockHistory.categoryType, categoryStockHistory.weight ,categoryStockHistory.stockType, categoryStockHistory.stockDate));
+            });
         }
+    } catch (error) {
+        console.error("Error loading category stock history from local storage");
     }
     return categoryStockHistoryList;
 }

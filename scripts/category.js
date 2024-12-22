@@ -79,6 +79,7 @@ class Category{
                 <td>
                     <div class="actions">
                         <button class="edit-category-button" id="${this.itemID}">EDIT CATEGORY</button>
+                        <button class="delete-category-button" id="${this.itemID}">DELETE CATEGORY</button>
                     </div>
                 </td>
             </tr>

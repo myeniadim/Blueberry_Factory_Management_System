@@ -71,8 +71,12 @@
                 <h2>Stock Levels of Categories</h2>
                 <div class="form-area">
                     <form id="search-form">
-                        <label for="searchCategory">Search:</label>
-                        <input type="text" id="search-category" name="search-category">
+                        <label for="searchCategory">Show:</label>
+                        <select name="search-category-stock" id="search-category-stock">
+                            <option value="all">All</option>
+                            <option value="low">Low Stock</option>
+                            <option value="high">High Stock</option>
+                        </select>
                     </form>
                 </div>
                 <div class="stock-level-area">
@@ -106,6 +110,22 @@
                     <div class="add-buttons">
                         <button type="submit" id="edit-category-submit-button">EDIT CATEGORY</button>
                         <button type="button" class="cancel-button" id="edit-category-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
+            <dialog class="add" id="delete-category-dialog">
+                <form id="delete-category-form">
+                    <h2>Delete Category</h2>
+                    <h3>WARNING: IF THERE IS A PACKAGE BELONGING TO THIS CATEGORY, YOU CANNOT DELETE THE CATEGORY.</h3>
+                    <label for="delete-category-id">Category ID:</label>
+                    <input type="text" id="delete-category-id" name="delete-category-id" readonly>
+                    <label for="delete-category-type">Category Type:</label>
+                    <input type="text" id="delete-category-type" name="delete-category-type" readonly>
+                    <label for="delete-category-date">Stock Date</label>
+                    <input type="date" id="delete-category-date" name="delete-category-date">
+                    <div class="add-buttons">
+                        <button type="submit" id="delete-category-submit-button">DELETE CATEGORY</button>
+                        <button type="button" class="cancel-button" id="delete-category-dialog">CANCEL</button>
                     </div>
                 </form>
             </dialog>
@@ -178,8 +198,7 @@
                         <tbody></tbody>
                     </table>
                 </div>
-                <div class="button-area">
-                    <button>GENERATE REPORT</button>
+                <div class="generate-csv-button-area">
                 </div>
             </section>
         </div>

@@ -1,7 +1,8 @@
-import {openDialog, addRowToTable, updateTableRowStyles, updateTable, generateItemID, generateID, calculateDatePeriod} from "./script.js";
-import {storeData, changeableDatas, categories, categoryStockHistory} from "./data.js";
+import {openDialog, addRowToTable, updateTableRowStyles, updateTable, generateItemID, generateID, calculateDatePeriod, createCSVArea} from "./script.js";
+import {storeData, changeableDatas, products, productStockHistory, categories, categoryStockHistory} from "./data.js";
 import Category from "./category.js";
 import CategoryStockHistory from "./categoryStockHistory.js";
+
 
 function addUpdateCategoryStockButtonListeners(){
     document.querySelectorAll(".update-stock-category-button").forEach(button => {
@@ -36,6 +37,17 @@ function addEditCategoryButtonListeners(){
     });
 }
 
+function addDeleteCategoryButtonListeners(){
+    document.querySelectorAll(".delete-category-button").forEach(button => {
+        button.addEventListener("click", function(){
+            let category = categories.find(c => c.itemID == button.id);
+            document.getElementById("delete-category-id").value = category.itemID;
+            document.getElementById("delete-category-type").value = category.type;
+            openDialog("delete-category-dialog");
+        });
+    });
+}
+
 
 function updateSupplierStock(){
     const cardView = document.querySelector(".card-view-solo-area .card-view");
@@ -48,10 +60,10 @@ function updateSupplierStock(){
 updateSupplierStock();
 
 
-function updateCategoryStockView(){
+function updateCategoryStockView(filteredCategories){
     const cardView = document.querySelector(".card-view-area");
     cardView.innerHTML = "";
-    categories.forEach(category => {
+    filteredCategories.forEach(category => {
         cardView.innerHTML += category.toCardView();
     });
     addUpdateCategoryStockButtonListeners();
@@ -60,13 +72,16 @@ function updateCategoryStockView(){
 function updateCategoriesTable(categoriesList){
     updateTable(categoriesList, "categories-table");
     addEditCategoryButtonListeners();
+    addDeleteCategoryButtonListeners();
 }
 
-updateCategoryStockView();
+function updateEverything(){
+    updateCategoriesTable(categories);
+    updateCategoryStockView(categories);
+    updateTable(categoryStockHistory, "category-stock-history-table");
+}
 
-updateTable(categories, "categories-table");
-updateTable(categoryStockHistory, "category-stock-history-table");
-addEditCategoryButtonListeners();
+updateEverything();
 
 
 function isSameCategory(category){
@@ -102,18 +117,45 @@ function createNewCategory(event){
     categories.push(newCategory);
     storeData("categories", categories);
     addRowToTable(newCategory, "categories-table");
-    let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), newCategory, quantityStock, "Category Created", stockDate);
+    let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), newCategory.itemID, newCategory.type, quantityStock, "CREATED CATEGORY", stockDate);
     categoryStockHistory.push(newCategoryStockHistory);
     addRowToTable(newCategoryStockHistory, "category-stock-history-table");
     storeData("categoryStockHistory", categoryStockHistory);
     updateTableRowStyles("categories-table");
-    updateCategoryStockView();
+    addEditCategoryButtonListeners();
+    updateCategoryStockView(categories);
     document.getElementById("add-category-dialog").close();
     document.getElementById("add-category-form").reset();
 }
 
 document.querySelector("#add-category-button").addEventListener("click", (event) => {
     createNewCategory(event);
+});
+
+document.querySelector("#edit-category-submit-button").addEventListener("click", (event) => {
+    event.preventDefault();
+    let itemID = document.getElementById("edit-category-id").value;
+    let type = document.getElementById("edit-category-type").value;
+    let reorderLevel = document.getElementById("edit-reorder-level").value;
+    let category = categories.find(c => c.itemID == itemID);
+    if(category.type != type && categories.some(c => c.type.toLowerCase() == type.toLowerCase())){
+        alert("Category already exists");
+        return;
+    }else if(reorderLevel < 0){
+        alert("Please enter a valid number");
+        return;
+    }
+    category.type = type;
+    category.reorderLevel = reorderLevel;
+    categoryStockHistory.forEach(c => {
+        c.updateCategoryInfo();
+    });
+    storeData("categoryStockHistory", categoryStockHistory);
+    storeData("categories", categories);
+    updateCategoriesTable(categories);
+    updateCategoryStockView(categories);
+    updateTable(categoryStockHistory, "category-stock-history-table");
+    document.getElementById("edit-category-dialog").close();
 });
 
 document.querySelector("#update-category-stock-button").addEventListener("click", (event) => {
@@ -137,17 +179,59 @@ document.querySelector("#update-category-stock-button").addEventListener("click"
     category.quantityStock += addedStock;
     storeData("categories", categories);
     updateCategoriesTable(categories);
-    let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category, addedStock, "Stock IN", stockDate);
+    let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category.itemID, category.type, addedStock, "STOCK IN", stockDate);
     categoryStockHistory.push(newCategoryStockHistory);
     storeData("categoryStockHistory", categoryStockHistory);
     updateTable(categoryStockHistory, "category-stock-history-table");
     changeableDatas.supplierStock -= addedStock;
     storeData("changeableDatas", changeableDatas);
     updateSupplierStock();
-    updateCategoryStockView();
+    updateCategoryStockView(categories);
     document.getElementById("update-category-stock-dialog").close();
     document.getElementById("update-category-stock-form").reset();
 });
+
+document.querySelector("#delete-category-submit-button").addEventListener("click", (event) => {
+    event.preventDefault();
+    let itemID = document.getElementById("delete-category-id").value;
+    let category = categories.find(c => c.itemID == itemID);
+    let stockDate = document.getElementById("delete-category-date").value;
+    let tempProducts = [...products];
+    let productsToDelete = tempProducts.filter(p => p.category.itemID == itemID);
+    if(stockDate == ""){
+        alert("Please enter a date");
+        return;
+    }else if(productsToDelete.length > 0){
+        alert("Cannot delete category with products in it");
+        return;
+    }else if(category.quantityStock > 0){
+        alert("Cannot delete category with stock in it");
+        return;
+    }else{
+        let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category.itemID, category.type, category.quantityStock, "DELETED CATEGORY", stockDate);
+        categoryStockHistory.push(newCategoryStockHistory);
+        storeData("categoryStockHistory", categoryStockHistory);
+        let index = categories.indexOf(category);
+        categories.splice(index, 1);
+        storeData("categories", categories);
+        updateCategoriesTable(categories);
+        updateCategoryStockView(categories);
+        updateTable(categoryStockHistory, "category-stock-history-table");
+        document.getElementById("delete-category-dialog").close();
+    }
+});
+
+document.querySelector("#search-category-stock").addEventListener("change", function(){
+    let searchValue = document.getElementById("search-category-stock").value;
+    let filteredCategories = categories;
+    if (searchValue === "low"){
+        filteredCategories = categories.filter(c => c.quantityStock < c.reorderLevel);
+    }else if (searchValue === "high"){
+        filteredCategories = categories.filter(c => c.quantityStock >= c.reorderLevel);
+    }
+    updateCategoryStockView(filteredCategories);
+});
+
 
 document.querySelector("#search-category").addEventListener("keyup", function(){
     let tempCategories = [...categories];
@@ -174,45 +258,26 @@ document.querySelector("#submit-filter-button").addEventListener("click", functi
     let category = categories.find(c => c.type == type);
     let startDate = document.getElementById("start-date").value;
     let period = document.getElementById("select-period").value;
-
-    if(type != "" && category == null){
-        alert("Category does not exist. Please enter a valid type or do not enter category type");
-        return;
+    let endDate = calculateDatePeriod(startDate, period);
+    let filteredCategoryStockHistory;
+    if (category != null && startDate == ""){
+        filteredCategoryStockHistory = categoryStockHistory.filter(c => c.categoryId == category.itemID);
+    }else if (category != null && startDate != ""){
+        filteredCategoryStockHistory = categoryStockHistory.filter(c => c.categoryId == category.itemID && new Date(c.stockDate) >= new Date(startDate) && new Date(c.stockDate) <= new Date(endDate));
+    }else if (category == null && startDate != ""){
+        filteredCategoryStockHistory = categoryStockHistory.filter(c => new Date(c.stockDate) >= new Date(startDate) && new Date(c.stockDate) <= new Date(endDate));
+    }else{
+        alert("Please select a category or a start date");
+        filteredCategoryStockHistory = categoryStockHistory;
     }
-    if(category == null && startDate == ""){
-        alert("Please select a category or enter a start date");
-        return;
-    }else if(category == null && (startDate != "" && period == "select")){
-        alert("Please select a period");
-        return;
-    }else if(category != null && startDate == ""){
-        alert("Please enter a start date");
-        return;
-    }else if(category != null && (startDate != "" && period == "select")){
-        alert("Please select a period");
-        return;
-    }else if(category == null && (startDate != "" && period != "select")){
-        let endDate = calculateDatePeriod(startDate, period);
-        let filteredCategoryStockHistory = categoryStockHistory.filter(c => new Date(c.stockDate) >= new Date(startDate) && new Date(c.stockDate) <= new Date(endDate));
-        document.querySelector("#end-date").value = endDate.toISOString().split("T")[0];
-        updateTable(filteredCategoryStockHistory, "category-stock-history-table");
-        document.querySelector("#filter-history-dialog").close();
-        document.querySelector("#filter-history-form").reset();
-    }else if(category != null && (startDate != "" && period != "select")){
-        let endDate = calculateDatePeriod(startDate, period);
-        let filteredCategoryStockHistory = categoryStockHistory.filter(c => c.Category.itemID == category.itemID && new Date(c.stockDate) >= new Date(startDate) && new Date(c.stockDate) <= new Date(endDate));
-        document.querySelector("#end-date").value = endDate.toISOString().split("T")[0];
-        updateTable(filteredCategoryStockHistory, "category-stock-history-table");
-        document.querySelector("#filter-history-dialog").close();
-        document.querySelector("#filter-history-form").reset();
-    }
+    updateTable(filteredCategoryStockHistory, "category-stock-history-table");
+    document.getElementById("filter-history-dialog").close();
+    document.getElementById("filter-history-form").reset();
+    createCSVArea(".generate-csv-button-area", filteredCategoryStockHistory, "category-stock-history-table");
 });
 
 document.querySelector("#clear-filter-button").addEventListener("click", function(event){
     event.preventDefault();
-    document.querySelector("#stock-history-category-type").value = "";
-    document.querySelector("#start-date").value = "";
-    document.querySelector("#end-date").value = "";
-    document.querySelector("#select-period").value = "select";
     updateTable(categoryStockHistory, "category-stock-history-table");
+    createCSVArea(".generate-csv-button-area", categoryStockHistory, "category-stock-history-table");
 });

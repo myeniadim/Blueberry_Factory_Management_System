@@ -379,5 +379,10 @@ hr{
     gap: 1rem;
 }
 
+.generate-csv-button-area{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
 
 

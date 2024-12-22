@@ -184,7 +184,7 @@ document.querySelector("#update-product-stock-submit-button").addEventListener("
 
         storeData("categories", categories);
         updateCategoriesStockView(categories);
-        let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category, weight, "STOCK OUT (PACKAGED)", stockDate);
+        let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category.itemID, category.type, weight, "STOCK OUT (PACKAGED)", stockDate);
         categoryStockHistory.push(newCategoryStockHistory);
         storeData("categoryStockHistory", categoryStockHistory);
         updateProductsTable(products);
@@ -258,7 +258,7 @@ document.querySelector("#edit-product-submit-button").addEventListener("click", 
             category.quantityStock = + (category.quantityStock + weight).toFixed(2);
             storeData("categories", categories);
             updateCategoriesStockView(categories);
-            let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category, weight, "STOCK OUT (PRODUCT UPDATED)", stockDate);
+            let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category.itemID, category.type, weight, "STOCK OUT (PACKAGED)", stockDate);
             categoryStockHistory.push(newCategoryStockHistory);
             storeData("categoryStockHistory", categoryStockHistory);
             let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product.id, product.name, product.category.itemID, product.category.type, product.stockNum, "STOCK OUT (CHANGED PRODUCT WEIGHT)", stockDate);
@@ -298,27 +298,31 @@ document.querySelector("#edit-product-submit-button").addEventListener("click", 
     }
 });
 
-document.querySelector("#delete-product-submit-button").addEventListener("click", function(event){
-    event.preventDefault();
-    let productID = document.getElementById("delete-product-id").value;
-    let product = products.find(p => p.id == productID);
-    let stockDate = document.getElementById("delete-product-stock-date").value;
+function deleteProduct(product, stockDate){
     let category = categories.find(c => c.type == product.category.type);
     let weight = product.calculateTotalWeight(product.stockNum);
     category.quantityStock = + (category.quantityStock + weight).toFixed(2);
     storeData("categories", categories);
-    updateCategoriesStockView(categories);
-    let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category, weight, "STOCK IN (PRODUCT DELETED)", stockDate);
+    let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category.itemID, category.type, weight, "STOCK OUT (PRODUCT DELETED)", stockDate);
     categoryStockHistory.push(newCategoryStockHistory);
     storeData("categoryStockHistory", categoryStockHistory);
     let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product.id, product.name, product.category.itemID, product.category.type, product.stockNum, "STOCK OUT (PRODUCT DELETED)", stockDate);
     productStockHistory.push(newProductStockHistory);
     storeData("productStockHistory", productStockHistory);
-    updateTable(productStockHistory, "product-stock-history-table");
-    let tempProducts = products.filter(p => p.id != productID);
+    let tempProducts = products.filter(p => p.id != product.id);
     storeData("products", tempProducts);
-    updateTable(tempProducts, "product-table");
+    return tempProducts;
+}
+
+document.querySelector("#delete-product-submit-button").addEventListener("click", function(event){
+    event.preventDefault();
+    let productID = document.getElementById("delete-product-id").value;
+    let stockDate = document.getElementById("delete-product-stock-date").value;
+    let product = products.find(p => p.id == productID);
+    let tempProducts = deleteProduct(product, stockDate);
+    updateProductsTable(tempProducts);
     updateProductsStockView(tempProducts);
+    updateCategoriesStockView(categories);
     document.getElementById("delete-product-dialog").close();
 });
 
