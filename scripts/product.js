@@ -63,6 +63,10 @@ class Product{
         `;
     }
 
+    toString(){
+        return(this.category.type + " " + this.name + " (" + this.weight + "kg)  ");
+    }
+
 }
 
 export default Product;

@@ -4,6 +4,9 @@ import Category from "./category.js";
 import CategoryStockHistory from "./categoryStockHistory.js";
 import Product from "./product.js";
 import ProductStockHistory from "./productStockHistory.js";
+import Customer from "./customer.js";
+import Order from "./order.js";
+import OrderHistory from "./orderHistory.js";
 
 function storeData(dataTitle, data){
     localStorage.setItem(dataTitle, JSON.stringify(data));
@@ -121,6 +124,53 @@ function getProductStockHistoryList(){
     return productStockHistoryList;
 }
 
+function getCustomers(){
+    let customersList = [];
+    try {
+        let loadedCustomers = retrieveData("customers");
+        if(loadedCustomers){
+            loadedCustomers.forEach(customer => {
+                customersList.push(new Customer(customer.id, customer.name, customer.address, customer.phoneNum, customer.email));
+            });
+        }
+    } catch (error) {
+        console.error("Error loading customers from local storage");
+    }
+    return customersList;
+}
+
+function getOrders(){
+    let ordersList = [];
+    try {
+        let loadedOrders = retrieveData("orders");
+        if(loadedOrders){
+            loadedOrders.forEach(order => {
+                let customer = customers.find(c => c.id == order.customer.id);
+                let product = products.find(p => p.id == order.product.id);
+                ordersList.push(new Order(order.id, customer, product, order.productNum, order.productPrice, order.price, order.status, order.date));
+            });
+        }
+    } catch (error) {
+        console.error("Error loading orders from local storage");
+    }
+    return ordersList;
+}
+
+function getOrdersHistory(){
+    let ordersHistoryList = [];
+    try {
+        let loadedOrdersHistory = retrieveData("ordersHistory");
+        if(loadedOrdersHistory){
+            loadedOrdersHistory.forEach(orderHistory => {
+                ordersHistoryList.push(new OrderHistory(orderHistory.id, orderHistory.orderId, orderHistory.customerId, orderHistory.customerName, orderHistory.customerAddress, orderHistory.customerPhoneNum, orderHistory.customerEmail, orderHistory.productId, orderHistory.productName, orderHistory.productNum, orderHistory.productPrice, orderHistory.price, orderHistory.status, orderHistory.date));
+            });
+        }
+    } catch (error) {
+        console.error("Error loading orders history from local storage");
+    }
+    return ordersHistoryList;
+}
+
 
 
 //Supplier
@@ -134,8 +184,14 @@ const categoryStockHistory = getCategoryStockHistoryList();
 //Product Categorization
 const products = getProductList();
 const productStockHistory = getProductStockHistoryList();
+//Sales
+const customers = getCustomers();
+const orders = getOrders();
+const ordersHistory = getOrdersHistory();
 
 
 
 
-export {storeData, retrieveData, getFarmers, farmers, purchases, changeableDatas, categories, categoryStockHistory, products, productStockHistory};
+export {storeData, retrieveData, getFarmers, farmers, purchases, 
+    changeableDatas, categories, categoryStockHistory, products, 
+    productStockHistory, customers, orders, ordersHistory};

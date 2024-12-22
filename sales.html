@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&family=Satisfy&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <script type="module" src="./scripts/script.js"></script>
+    <script type="module" src="./scripts/salesModule.js"></script>
 </head>
 
 <body>
@@ -29,9 +31,267 @@
         </div>
     </nav>
     <main>
-        <h1>Sales Management</h1>
-        <p>Welcome to the Sales Management section. Here you can manage all sales-related activities.</p>
-        <!-- Add your sales management content here -->
+        <header>
+            <h1>Sales Management Module</h1>
+            <div class="main-navbar">
+                <button class="navbar-button" id="customer-section">Customers</button>
+                <button class="navbar-button" id="sales-section">Sales</button>
+                <button class="navbar-button" id="order-history-section">Order History</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <dialog class="add" id="add-customer-dialog">
+                <h2>Add Customer</h2>
+                <form id="add-customer-form">
+                    <label for="customer-name">Customer Name</label>
+                    <input type="text" id="customer-name" name="customer-name" required>
+                    <label for="customer-address">Customer Address</label>
+                    <input type="text" id="customer-address" name="customer-address" required>
+                    <label for="customer-phone">Customer Phone</label>
+                    <input type="text" id="customer-phone" name="customer-phone" required>
+                    <label for="customer-email">Customer Email</label>
+                    <input type="email" id="customer-email" name="customer-email" required>
+                    <div class="add-buttons">
+                        <button type="submit" class="add-customer-button">ADD CUSTOMER</button>
+                        <button type="button" class="cancel-button" id="add-customer-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
+
+            <dialog class="add" id="edit-customer-dialog">
+                <h2>Edit Customer</h2>
+                <form id="edit-customer-form">
+                    <label for="edit-customer-id">Customer ID</label>
+                    <input type="number" id="edit-customer-id" name="edit-customer-id" readonly>
+                    <label for="edit-customer-name">Customer Name</label>
+                    <input type="text" id="edit-customer-name" name="edit-customer-name" required>
+                    <label for="edit-customer-address">Customer Address</label>
+                    <input type="text" id="edit-customer-address" name="edit-customer-address" required>
+                    <label for="edit-customer-phone">Customer Phone</label>
+                    <input type="text" id="edit-customer-phone" name="edit-customer-phone" required>
+                    <label for="edit-customer-email">Customer Email</label>
+                    <input type="email" id="edit-customer-email" name="edit-customer-email" required>
+                    <div class="add-buttons">
+                        <button type="submit" class="edit-customer-submit-button">EDIT CUSTOMER</button>
+                        <button type="button" class="cancel-button" id="edit-customer-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
+
+            <section class="customer-section">
+                <h2>Customers</h2>
+                <div class="form-area">
+                    <form id="search-form">
+                        <label for="search-customer">Search:</label>
+                        <input type="text" id="search-customer" name="search-customer">
+                    </form>
+                    <button class="add-object-button" id="add-customer-dialog">CREATE CUSTOMER</button>
+                </div>
+                <div class="customer-table">
+                    <table id="customers-table">
+                        <thead>
+                            <tr>
+                                <th>Customer ID</th>
+                                <th>Customer Name</th>
+                                <th>Customer Address</th>
+                                <th>Customer Phone</th>
+                                <th>Customer Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <dialog class="add" id="add-sale-dialog">
+                <h2>NEW ORDER</h2>
+                <form id="add-sale-form">
+                    <label for="sale-customer-id">Customer ID</label>
+                    <input type="number" id="sale-customer-id" name="sale-customer-id" required>
+                    <label for="sale-customer-name">Customer Name</label>
+                    <input type="text" id="sale-customer-name" name="sale-customer-name" readonly>
+                    <label for="sale-product-id">Product ID</label>
+                    <input type="number" id="sale-product-id" name="sale-product-id" required>
+                    <label for="sale-product-name">Product Name</label>
+                    <input type="text" id="sale-product-name" name="sale-product-name" readonly>
+                    <label for="sale-product-number">Product Number</label>
+                    <input type="number" id="sale-product-number" name="sale-product-number" required>
+                    <label for="sale-total-price">Total Price</label>
+                    <input type="number" id="sale-total-price" name="sale-total-price" readonly>
+                    <label for="sale-date">Date</label>
+                    <input type="date" id="sale-date" name="sale-date" required>
+                    <div class="add-buttons">
+                        <button type="submit" class="add-sale-submit-button">ADD SALE</button>
+                        <button type="button" class="cancel-button" id="add-sale-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
+
+            <dialog class="add" id="update-status-dialog">
+                <h2>UPDATE STATUS</h2>
+                <form id="update-status-form">
+                    <label for="update-status-id">Sale ID</label>
+                    <input type="number" id="update-status-id" name="update-status-id" readonly>
+                    <label for="update-status">Status</label>
+                    <select id="update-status" name="update-status">
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Processed">Processed</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                    </select>
+                    <label for="update-status-date">Date</label>
+                    <input type="date" id="update-status-date" name="update-status-date" required>
+                    <div class="add-buttons">
+                        <button type="submit" class="update-status-submit-button">UPDATE STATUS</button>
+                        <button type="button" class="cancel-button" id="update-status-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
+
+            <dialog class="add" id="view-sale-detail-dialog">
+                <h2>VIEW ORDER DETAIL</h2>
+                <form id="view-sale-detail-form">
+                    <label for="view-sale-id">Sale ID</label>
+                    <input type="number" id="view-sale-id" name="view-sale-id" readonly>
+                    <label for="view-customer-id">Customer ID</label>
+                    <input type="number" id="view-customer-id" name="view-customer-id" readonly>
+                    <label for="view-product-id">Product ID</label>
+                    <input type="number" id="view-product-id" name="view-product-id" readonly>
+                    <label for="view-customer-name">Customer Name</label>
+                    <input type="text" id="view-customer-name" name="view-customer-name" readonly>
+                    <label for="view-product-name">Product Name</label>
+                    <input type="text" id="view-product-name" name="view-product-name" readonly>
+                    <label for="view-total-price">Total Price</label>
+                    <input type="number" id="view-total-price" name="view-total-price" readonly>
+                    <label for="view-date">Date</label>
+                    <input type="date" id="view-date" name="view-date" readonly>
+                    <div class="add-buttons">
+                        <button type="button" class="cancel-button" id="view-sale-detail-dialog">CLOSE</button>
+                    </div>
+                </form>
+            </dialog>
+
+            <dialog class="table-dialog" id="view-history-dialog">
+                <button class="cancel-button" id="view-history-dialog"><i class="fa-solid fa-xmark"></i></button>
+                <h2>Order History</h2>
+                <div class="table-area">
+                    <table id="order-history-table-detail">
+                        <thead>
+                            <tr>
+                                <th>Order History Id</th>
+                                <th>Sale ID</th>
+                                <th>Customer Id</th>
+                                <th>Customer Name</th>
+                                <th>Product Id</th>
+                                <th>Product Name</th>
+                                <th>Total Price</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </dialog>
+
+            <section class="sales-section">
+                <h2>Sales</h2>
+                <div class="form-area">
+                    <form id="search-form">
+                        <label for="search-sales">Search:</label>
+                        <input type="text" id="search-sales" name="search-sales">
+                    </form>
+                    <button class="add-object-button" id="add-sale-dialog">NEW ORDER</button>
+                </div>
+                <div class="table-area">
+                    <table id="sales-table">
+                        <thead>
+                            <tr>
+                                <th>Sale ID</th>
+                                <th>Customer Name</th>
+                                <th>Product Name</th>
+                                <th>Product Number</th>
+                                <th>Product Price</th>
+                                <th>Total Price</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <dialog class="add" id="filter-order-history-dialog">
+                <form id="filter-order-history-form">
+                    <h2>FILTER ORDER HISTORY</h2>
+                    <label for="filter-customer-id">Customer ID</label>
+                    <input type="number" id="filter-customer-id" name="filter-customer-id">
+                    <label for="filter-product-id">Product ID</label>
+                    <input type="number" id="filter-product-id" name="filter-product-id">
+                    <label for="filter-customer-name">Customer Name</label>
+                    <input type="text" id="filter-customer-name" name="filter-customer-name" readonly>
+                    <label for="filter-product-name">Product Name</label>
+                    <input type="text" id="filter-product-name" name="filter-product-name" readonly>
+                    <label for="filter-status">Status</label>
+                    <select id="filter-status" name="filter-status">
+                        <option value="all">All</option>
+                        <option value="pending">Pending</option>
+                        <option value="processed">Processed</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                    </select>
+                    <label for="filter-start-date">Start Date</label>
+                    <input type="date" id="filter-start-date" name="filter-start-date">
+                    <label for="selectPeriod">Select Period</label>
+                    <select id="select-period" name="select-period">
+                        <option value="select">Select</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                    <label for="filter-end-date">End Date</label>
+                    <input type="date" id="filter-end-date" name="filter-end-date">
+                    <div class="add-buttons">
+                        <button type="submit" class="filter-order-history-submit-button">APPLY FILTER</button>
+                        <button type="button" class="cancel-button" id="filter-order-history-dialog">CANCEL</button>
+                    </div>
+                </form>
+            </dialog>
+
+            <section class="order-history-section">
+                <h2>Order History</h2>
+                <div class="form-area">
+                    <button class="add-object-button" id="filter-order-history-dialog">FILTER HISTORY</button>
+                    <button id="clear-filter-order-history-button">CLEAR FILTER</button>
+                </div>
+                <div class="table-area">
+                    <table id="order-history-table">
+                        <thead>
+                            <tr>
+                                <th>Order History Id</th>
+                                <th>Sale ID</th>
+                                <th>Customer Id</th>
+                                <th>Customer Name</th>
+                                <th>Product Id</th>
+                                <th>Product Name</th>
+                                <th>Total Price</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="generate-csv-button-area"></div>
+            </section>
+        </div>
     </main>
 </body>
 </html>
