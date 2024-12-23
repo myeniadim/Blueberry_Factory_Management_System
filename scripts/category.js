@@ -1,6 +1,6 @@
 class Category{
-    constructor(itemID, type, quantityStock, reorderLevel, stockDate){
-        this.itemID = itemID;
+    constructor(id, type, quantityStock, reorderLevel){
+        this.id = id;
         this.type = type;
         this.quantityStock = quantityStock;
         this.reorderLevel = reorderLevel;
@@ -21,24 +21,24 @@ class Category{
             return `
             <div class="card-view" id="bad">
                 <div class="card-view-header">
-                    <h3>ITEM ID: ${this.itemID}</h3>
+                    <h3>ITEM ID: ${this.id}</h3>
                     <h3>${this.type.toUpperCase()} BLUEBERRIES</h3>
                 </div>
                 <div>Stock Level: ${this.quantityStock}kg</div>
                 <div>Stock Levels are Low!</div>
-                <button class="update-stock-category-button" id="${this.itemID}">UPDATE STOCK</button>
+                <button class="update-stock-category-button" id="${this.id}">UPDATE STOCK</button>
             </div>
             `;
         }else{
             return `
             <div class="card-view" id="good">
                 <div class="card-view-header">
-                    <h3>ITEM ID: ${this.itemID}</h3>
+                    <h3>ITEM ID: ${this.id}</h3>
                     <h3>${this.type.toUpperCase()} BLUEBERRIES</h3>
                 </div>
                 <div>Stock Level: ${this.quantityStock}kg</div>
                 <div>Stock Levels are Good!</div>
-                <button class="update-stock-category-button" id="${this.itemID}">UPDATE STOCK</button>
+                <button class="update-stock-category-button" id="${this.id}">UPDATE STOCK</button>
             </div>
             `;
         }
@@ -49,7 +49,7 @@ class Category{
             return `
             <div class="card-view" id="bad">
                 <div class="card-view-header">
-                    <h3>ITEM ID: ${this.itemID}</h3>
+                    <h3>ITEM ID: ${this.id}</h3>
                     <h3>${this.type.toUpperCase()} BLUEBERRIES</h3>
                 </div>
                 <div>Stock Level: ${this.quantityStock}kg</div>
@@ -60,7 +60,7 @@ class Category{
             return `
             <div class="card-view" id="good">
                 <div class="card-view-header">
-                    <h3>ITEM ID: ${this.itemID}</h3>
+                    <h3>ITEM ID: ${this.id}</h3>
                     <h3>${this.type.toUpperCase()} BLUEBERRIES</h3>
                 </div>
                 <div>Stock Level: ${this.quantityStock}kg</div>
@@ -73,13 +73,13 @@ class Category{
     toTableRow(){
         return `
             <tr>
-                <td>${this.itemID}</td>
+                <td>${this.id}</td>
                 <td>${this.type}</td>
                 <td>${this.reorderLevel}kg</td>
                 <td>
                     <div class="actions">
-                        <button class="edit-category-button" id="${this.itemID}">EDIT CATEGORY</button>
-                        <button class="delete-category-button" id="${this.itemID}">DELETE CATEGORY</button>
+                        <button class="edit-category-button" id="${this.id}">EDIT CATEGORY</button>
+                        <button class="delete-category-button" id="${this.id}">DELETE CATEGORY</button>
                     </div>
                 </td>
             </tr>

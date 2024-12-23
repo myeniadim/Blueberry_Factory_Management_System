@@ -1,4 +1,4 @@
-import {openDialog, addRowToTable, updateTableRowStyles, updateTable, generateItemID, generateID, calculateDatePeriod, createCSVArea} from "./script.js";
+import {openDialog, addRowToTable, updateTableRowStyles, updateTable, generateID, calculateDatePeriod, createCSVArea} from "./script.js";
 import {storeData, changeableDatas, products, productStockHistory, categories, categoryStockHistory} from "./data.js";
 import Category from "./category.js";
 import CategoryStockHistory from "./categoryStockHistory.js";
@@ -7,7 +7,7 @@ import CategoryStockHistory from "./categoryStockHistory.js";
 function addUpdateCategoryStockButtonListeners(){
     document.querySelectorAll(".update-stock-category-button").forEach(button => {
         button.addEventListener("click", function(){
-            let category = categories.find(c => c.itemID == button.id);
+            let category = categories.find(c => c.id == button.id);
             document.getElementById("update-category-type").value = category.type;
             document.getElementById("current-stock-level").value = category.quantityStock;
             openDialog("update-category-stock-dialog");
@@ -28,8 +28,8 @@ function updateCategoriesInput(){
 function addEditCategoryButtonListeners(){
     document.querySelectorAll(".edit-category-button").forEach(button => {
         button.addEventListener("click", function(){
-            let category = categories.find(c => c.itemID == button.id);
-            document.getElementById("edit-category-id").value = category.itemID;
+            let category = categories.find(c => c.id == button.id);
+            document.getElementById("edit-category-id").value = category.id;
             document.getElementById("edit-category-type").value = category.type;
             document.getElementById("edit-reorder-level").value = category.reorderLevel;
             openDialog("edit-category-dialog");
@@ -40,9 +40,8 @@ function addEditCategoryButtonListeners(){
 function addDeleteCategoryButtonListeners(){
     document.querySelectorAll(".delete-category-button").forEach(button => {
         button.addEventListener("click", function(){
-            let category = categories.find(c => c.itemID == button.id);
-            document.getElementById("delete-category-id").value = category.itemID;
-            document.getElementById("delete-category-type").value = category.type;
+            let category = categories.find(c => c.id == button.id);
+            document.getElementById("delete-category-id").value = category.id;
             openDialog("delete-category-dialog");
         });
     });
@@ -79,6 +78,7 @@ function updateEverything(){
     updateCategoriesTable(categories);
     updateCategoryStockView(categories);
     updateTable(categoryStockHistory, "category-stock-history-table");
+    createCSVArea(".generate-csv-button-area", categoryStockHistory, "category-stock-history-table");
 }
 
 updateEverything();
@@ -93,8 +93,7 @@ function isSameCategory(category){
 
 function createNewCategory(event){
     event.preventDefault();
-    let itemID = generateItemID(categories);
-    console.log(itemID);
+    let id = generateID(categories);
     let type = document.getElementById("category-type").value;
     let quantityStock = 0;
     let reorderLevel = document.getElementById("reorder-level").value;
@@ -108,7 +107,7 @@ function createNewCategory(event){
         alert("Please enter a valid number");
         return;
     }
-    let newCategory = new Category(itemID, type, quantityStock, reorderLevel, stockDate);
+    let newCategory = new Category(id, type, quantityStock, reorderLevel, stockDate);
     if(isSameCategory(newCategory)){
         alert("Category already exists");
         return;
@@ -117,13 +116,16 @@ function createNewCategory(event){
     categories.push(newCategory);
     storeData("categories", categories);
     addRowToTable(newCategory, "categories-table");
-    let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), newCategory.itemID, newCategory.type, quantityStock, "CREATED CATEGORY", stockDate);
-    categoryStockHistory.push(newCategoryStockHistory);
-    addRowToTable(newCategoryStockHistory, "category-stock-history-table");
-    storeData("categoryStockHistory", categoryStockHistory);
     updateTableRowStyles("categories-table");
     addEditCategoryButtonListeners();
     updateCategoryStockView(categories);
+
+    let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), newCategory, quantityStock, "NEW CATEGORY", stockDate);
+    categoryStockHistory.push(newCategoryStockHistory);
+    storeData("categoryStockHistory", categoryStockHistory);
+    updateTable(categoryStockHistory, "category-stock-history-table");
+    createCSVArea(".generate-csv-button-area", categoryStockHistory, "category-stock-history-table");
+
     document.getElementById("add-category-dialog").close();
     document.getElementById("add-category-form").reset();
 }
@@ -134,27 +136,17 @@ document.querySelector("#add-category-button").addEventListener("click", (event)
 
 document.querySelector("#edit-category-submit-button").addEventListener("click", (event) => {
     event.preventDefault();
-    let itemID = document.getElementById("edit-category-id").value;
-    let type = document.getElementById("edit-category-type").value;
+    let id = document.getElementById("edit-category-id").value;
     let reorderLevel = document.getElementById("edit-reorder-level").value;
-    let category = categories.find(c => c.itemID == itemID);
-    if(category.type != type && categories.some(c => c.type.toLowerCase() == type.toLowerCase())){
-        alert("Category already exists");
-        return;
-    }else if(reorderLevel < 0){
+    let category = categories.find(c => c.id == id);
+    if(reorderLevel < 0){
         alert("Please enter a valid number");
         return;
     }
-    category.type = type;
     category.reorderLevel = reorderLevel;
-    categoryStockHistory.forEach(c => {
-        c.updateCategoryInfo();
-    });
-    storeData("categoryStockHistory", categoryStockHistory);
     storeData("categories", categories);
     updateCategoriesTable(categories);
     updateCategoryStockView(categories);
-    updateTable(categoryStockHistory, "category-stock-history-table");
     document.getElementById("edit-category-dialog").close();
 });
 
@@ -179,7 +171,7 @@ document.querySelector("#update-category-stock-button").addEventListener("click"
     category.quantityStock += addedStock;
     storeData("categories", categories);
     updateCategoriesTable(categories);
-    let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category.itemID, category.type, addedStock, "STOCK IN", stockDate);
+    let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category, addedStock, "STOCK IN", stockDate);
     categoryStockHistory.push(newCategoryStockHistory);
     storeData("categoryStockHistory", categoryStockHistory);
     updateTable(categoryStockHistory, "category-stock-history-table");
@@ -193,30 +185,24 @@ document.querySelector("#update-category-stock-button").addEventListener("click"
 
 document.querySelector("#delete-category-submit-button").addEventListener("click", (event) => {
     event.preventDefault();
-    let itemID = document.getElementById("delete-category-id").value;
-    let category = categories.find(c => c.itemID == itemID);
-    let stockDate = document.getElementById("delete-category-date").value;
+    let id = document.getElementById("delete-category-id").value;
+    let category = categories.find(c => c.id == id);
     let tempProducts = [...products];
-    let productsToDelete = tempProducts.filter(p => p.category.itemID == itemID);
-    if(stockDate == ""){
-        alert("Please enter a date");
-        return;
-    }else if(productsToDelete.length > 0){
+    let productsToDelete = tempProducts.filter(p => p.category.id == id);
+    if(productsToDelete.length > 0){
         alert("Cannot delete category with products in it");
         return;
     }else if(category.quantityStock > 0){
         alert("Cannot delete category with stock in it");
         return;
     }else{
-        let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category.itemID, category.type, category.quantityStock, "DELETED CATEGORY", stockDate);
-        categoryStockHistory.push(newCategoryStockHistory);
-        storeData("categoryStockHistory", categoryStockHistory);
-        let index = categories.indexOf(category);
-        categories.splice(index, 1);
-        storeData("categories", categories);
-        updateCategoriesTable(categories);
-        updateCategoryStockView(categories);
-        updateTable(categoryStockHistory, "category-stock-history-table");
+        let newCategories = categories.filter(c => c.id != id);
+        storeData("categories", newCategories);
+        let newCategoryStockHistory = categoryStockHistory.filter(c => c.category.id != id);
+        storeData("categoryStockHistory", newCategoryStockHistory);
+        updateCategoriesTable(newCategories);
+        updateCategoryStockView(newCategories);
+        updateTable(newCategoryStockHistory, "category-stock-history-table");
         document.getElementById("delete-category-dialog").close();
     }
 });
@@ -261,9 +247,9 @@ document.querySelector("#submit-filter-button").addEventListener("click", functi
     let endDate = calculateDatePeriod(startDate, period);
     let filteredCategoryStockHistory;
     if (category != null && startDate == ""){
-        filteredCategoryStockHistory = categoryStockHistory.filter(c => c.categoryId == category.itemID);
+        filteredCategoryStockHistory = categoryStockHistory.filter(c => c.category.id == category.id);
     }else if (category != null && startDate != ""){
-        filteredCategoryStockHistory = categoryStockHistory.filter(c => c.categoryId == category.itemID && new Date(c.stockDate) >= new Date(startDate) && new Date(c.stockDate) <= new Date(endDate));
+        filteredCategoryStockHistory = categoryStockHistory.filter(c => c.category.id == category.id && new Date(c.stockDate) >= new Date(startDate) && new Date(c.stockDate) <= new Date(endDate));
     }else if (category == null && startDate != ""){
         filteredCategoryStockHistory = categoryStockHistory.filter(c => new Date(c.stockDate) >= new Date(startDate) && new Date(c.stockDate) <= new Date(endDate));
     }else{

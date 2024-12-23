@@ -63,18 +63,18 @@ function getChangeableDatas(){
 }
 
 function getCategoryList(){
-    let categoryList = [];
+    let categoriesList = [];
     try {
         let loadedCategories = retrieveData("categories");
         if(loadedCategories){
             loadedCategories.forEach(category => {
-                categoryList.push(new Category(category.itemID, category.type, category.quantityStock, category.reorderLevel, category.stockDate));
+                categoriesList.push(new Category(category.id, category.type, category.quantityStock, category.reorderLevel));
             });
         }
     } catch (error) {
         console.error("Error loading categories from local storage");
     }
-    return categoryList;
+    return categoriesList;
 }
 
 function getCategoryStockHistoryList(){
@@ -82,8 +82,9 @@ function getCategoryStockHistoryList(){
     try {
         let loadedCategoryStockHistory = retrieveData("categoryStockHistory");
         if(loadedCategoryStockHistory){
-            loadedCategoryStockHistory.forEach(categoryStockHistory => {
-                categoryStockHistoryList.push(new CategoryStockHistory(categoryStockHistory.id, categoryStockHistory.categoryId, categoryStockHistory.categoryType, categoryStockHistory.weight ,categoryStockHistory.stockType, categoryStockHistory.stockDate));
+            loadedCategoryStockHistory.forEach(categoryStock => {
+                let category = categories.find(c => c.id == categoryStock.category.id);
+                categoryStockHistoryList.push(new CategoryStockHistory(categoryStock.id, category, categoryStock.weight, categoryStock.stockType, categoryStock.stockDate));
             });
         }
     } catch (error) {
@@ -93,20 +94,19 @@ function getCategoryStockHistoryList(){
 }
 
 function getProductList(){
-    let categoriesList = categories;
-    let productList = [];
+    let productsList = [];
     try {
         let loadedProducts = retrieveData("products");
         if(loadedProducts){
             loadedProducts.forEach(product => {
-                let category = categoriesList.find(c => c.itemID == product.category.itemID);
-                productList.push(new Product(product.id, category, product.name, product.weight, product.price, product.stockNum, product.reorderLevel));
+                let category = categories.find(c => c.id == product.category.id);
+                productsList.push(new Product(product.id, category, product.name, product.weight, product.price, product.taxRate, product.stockNum, product.reorderLevel));
             });
         }
     } catch (error) {
         console.error("Error loading products from local storage");
     }
-    return productList;
+    return productsList;
 }
 
 function getProductStockHistoryList(){
@@ -114,8 +114,10 @@ function getProductStockHistoryList(){
     try {
         let loadedProductStockHistory = retrieveData("productStockHistory");
         if(loadedProductStockHistory){
-            loadedProductStockHistory.forEach(productStockHistory => {
-                productStockHistoryList.push(new ProductStockHistory(productStockHistory.id, productStockHistory.productId, productStockHistory.productName, productStockHistory.categoryId, productStockHistory.categoryType, productStockHistory.stockAmount, productStockHistory.stockType, productStockHistory.stockDate));
+            loadedProductStockHistory.forEach(productStock => {
+                let product = products.find(p => p.id == productStock.product.id);
+                let category = categories.find(c => c.id == productStock.category.id);
+                productStockHistoryList.push(new ProductStockHistory(productStock.id, product, category, productStock.stockAmount, productStock.stockType, productStock.stockDate));
             });
         }
     } catch (error) {

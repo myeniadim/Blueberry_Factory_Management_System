@@ -104,7 +104,7 @@
                     <label for="edit-category-id">Category ID:</label>
                     <input type="text" id="edit-category-id" name="edit-category-id" readonly>
                     <label for="edit-category-type">Category Type:</label>
-                    <input type="text" id="edit-category-type" name="edit-category-type" required>
+                    <input type="text" id="edit-category-type" name="edit-category-type" readonly>
                     <label for="edit-reorder-level">Reorder Alert Level:</label>
                     <input type="number" id="edit-reorder-level" name="edit-reorder-level" required>
                     <div class="add-buttons">
@@ -116,13 +116,11 @@
             <dialog class="add" id="delete-category-dialog">
                 <form id="delete-category-form">
                     <h2>Delete Category</h2>
-                    <h3>WARNING: IF THERE IS A PACKAGE BELONGING TO THIS CATEGORY, YOU CANNOT DELETE THE CATEGORY.</h3>
+                    <h3>WARNING - I: IF THERE IS A PACKAGE BELONGING TO THIS CATEGORY, YOU CANNOT DELETE THE CATEGORY.</h3>
+                    <h3>WARNING - III: YOU CANNOT DELETE CATEGORY IF IT HAS STOCK!</h3>
+                    <h3>WARNING - III:  IF YOU DELETE THE CATEGORY, STOCK INFORMATION CONTAINING THIS CATEGORY IN THE STOCK HISTORY WILL ALSO BE DELETED.</h3>
                     <label for="delete-category-id">Category ID:</label>
                     <input type="text" id="delete-category-id" name="delete-category-id" readonly>
-                    <label for="delete-category-type">Category Type:</label>
-                    <input type="text" id="delete-category-type" name="delete-category-type" readonly>
-                    <label for="delete-category-date">Stock Date</label>
-                    <input type="date" id="delete-category-date" name="delete-category-date">
                     <div class="add-buttons">
                         <button type="submit" id="delete-category-submit-button">DELETE CATEGORY</button>
                         <button type="button" class="cancel-button" id="delete-category-dialog">CANCEL</button>
@@ -190,7 +188,7 @@
                                 <th>Stock ID</th>
                                 <th>ITEM ID</th>
                                 <th>TYPE</th>
-                                <th>STOCK LEVEL</th>
+                                <th>STOCK CHANGE</th>
                                 <th>STOCK TYPE</th>
                                 <th>STOCK DATE</th>
                             </tr>

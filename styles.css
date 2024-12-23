@@ -411,3 +411,7 @@ hr{
     justify-content: center;
     gap: 1rem;
 }
+
+dialog h3{
+    margin: 0;
+}

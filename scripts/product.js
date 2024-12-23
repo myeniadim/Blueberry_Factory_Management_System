@@ -1,10 +1,11 @@
 class Product{
-    constructor(id, category, name, weight, price, stockNum, reorderLevel){
+    constructor(id, category, name, weight, price, taxRate, stockNum, reorderLevel){
         this.id = id;
         this.category = category;
         this.name = name;
         this.weight = weight;
         this.price = price;
+        this.taxRate = taxRate;
         this.stockNum = stockNum;
         this.reorderLevel = reorderLevel;
         this.stockAlert;
@@ -54,10 +55,13 @@ class Product{
             <td>${this.name}</td>
             <td>${this.weight}kg</td>
             <td>${this.price}$</td>
+            <td>${this.taxRate}</td>
             <td>${this.reorderLevel} Packages</td>
             <td>
-                <button class="edit-product-button" id="${this.id}">EDIT</button>
-                <button class="delete-product-button" id="${this.id}">DELETE</button>
+                <div class="actions">
+                    <button class="edit-product-button" id="${this.id}">EDIT</button>
+                    <button class="delete-product-button" id="${this.id}">DELETE</button>
+                </div>
             </td>
         </tr>
         `;

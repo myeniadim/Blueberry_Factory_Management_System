@@ -1,6 +1,5 @@
 import {openDialog, addRowToTable, updateTableRowStyles, updateTable, generateItemID, generateID, calculateDatePeriod, createCSVArea} from './script.js';
-import {storeData, changeableDatas, categories, categoryStockHistory, products, productStockHistory} from './data.js';
-import Category from "./category.js";
+import {storeData, changeableDatas, categories, categoryStockHistory, products, productStockHistory, orders} from './data.js';
 import CategoryStockHistory from "./categoryStockHistory.js";
 import Product from './product.js';
 import ProductStockHistory from './productStockHistory.js';
@@ -56,8 +55,8 @@ function addEditProductButtonListeners(){
             document.getElementById("edit-product-id").value = product.id;
             document.getElementById("edit-product-category").value = product.category.type;
             document.getElementById("edit-product-name").value = product.name;
-            document.getElementById("edit-product-weight").value = product.weight;
             document.getElementById("edit-product-price").value = product.price;
+            document.getElementById("edit-product-tax-rate").value = product.taxRate;
             document.getElementById("edit-reorder-alert-level").value = product.reorderLevel;
             openDialog("edit-product-dialog");
         });
@@ -122,20 +121,17 @@ document.querySelector("#add-product-submit-button").addEventListener("click", f
     let productName = document.querySelector("#product-name").value;
     let productWeight = document.querySelector("#product-weight").value;
     let productPrice = document.querySelector("#product-price").value;
+    let productTaxRate = document.querySelector("#product-tax-rate").value;
     let reorderLevel = document.querySelector("#reorder-alert-level").value;
     let stockDate = document.querySelector("#product-stock-date").value;
 
     console.log(categoryName, productName, productWeight, productPrice, reorderLevel, stockDate);
 
-    let product = new Product(generateID(products), category, productName, productWeight, productPrice, 0, reorderLevel);
-    if((category != null && productName != "" && productWeight > 0 && productPrice > 0 && reorderLevel > 0 && stockDate != "") && !isSameProduct(product)){
+    let product = new Product(generateID(products), category, productName, productWeight, productPrice, productTaxRate, 0, reorderLevel);
+    if((category != null && productName != "" && productWeight > 0 && productPrice > 0 && (productTaxRate > 0 && productTaxRate < 1) && reorderLevel > 0 && stockDate != "") && !isSameProduct(product)){
         products.push(product);
         storeData("products", products);
         addRowtoProductsTable(product);
-        let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product.id, product.name, product.category.itemID, product.category.type, 0, "Product Created", stockDate);
-        productStockHistory.push(newProductStockHistory);
-        storeData("productStockHistory", productStockHistory);
-        updateTable(productStockHistory, "product-stock-history-table");
         updateProductsStockView(products);
         document.querySelector("#add-product-dialog").close();
     }else{
@@ -151,6 +147,8 @@ document.querySelector("#add-product-submit-button").addEventListener("click", f
             alert("Reorder level must be greater than 0");
         } else if (stockDate == "") {
             alert("Please provide a valid stock date");
+        } else if (productTaxRate <= 0 || productTaxRate >= 1) {
+            alert("Tax rate must be between 0 and 1");
         } else if (isSameProduct(product)) {
             alert("Product with the same name or weight already exists in the same category");
         }
@@ -175,7 +173,7 @@ document.querySelector("#update-product-stock-submit-button").addEventListener("
         storeData("products", products);
         updateTable(products, "product-table");
         updateProductsStockView(products);
-        let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product.id, product.name, product.category.itemID, product.category.type, newStockNum, "STOCK IN", stockDate);
+        let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product, category, newStockNum, "STOCK IN", stockDate);
         productStockHistory.push(newProductStockHistory);
         storeData("productStockHistory", productStockHistory);
         updateTable(productStockHistory, "product-stock-history-table");
@@ -184,7 +182,7 @@ document.querySelector("#update-product-stock-submit-button").addEventListener("
 
         storeData("categories", categories);
         updateCategoriesStockView(categories);
-        let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category.itemID, category.type, weight, "STOCK OUT (PACKAGED)", stockDate);
+        let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category, weight, "STOCK OUT (PACKAGED)", stockDate);
         categoryStockHistory.push(newCategoryStockHistory);
         storeData("categoryStockHistory", categoryStockHistory);
         updateProductsTable(products);
@@ -240,90 +238,45 @@ document.querySelector("#edit-product-submit-button").addEventListener("click", 
     event.preventDefault();
     let productID = document.getElementById("edit-product-id").value;
     let product = products.find(p => p.id == productID);
-    let categoryType = document.getElementById("edit-product-category").value;
     let productName = document.getElementById("edit-product-name").value;
-    let productWeight = document.getElementById("edit-product-weight").value;
+    let productWeight = product.weight;
     let productPrice = document.getElementById("edit-product-price").value;
+    let productTaxRate = document.getElementById("edit-product-tax-rate").value;
     let reorderLevel = document.getElementById("edit-reorder-alert-level").value;
-    let stockDate = document.getElementById("edit-product-stock-date").value;
     let isSameProduct = products.some(product => (product.id != product.id && product.category.type == categoryType && (product.name == productName || product.weight == productWeight)));
-    if((categoryType != "" && productName != "" && productWeight > 0 && productPrice > 0 && reorderLevel > 0 && stockDate != "") && !isSameProduct){
+
+    if(productName != "" && productPrice > 0 && productTaxRate > 0 && productTaxRate < 1 && reorderLevel > 0 && !isSameProduct){
         product.name = productName;
         product.price = productPrice;
+        product.taxRate = productTaxRate;
         product.reorderLevel = reorderLevel;
-        if (product.weight != productWeight) {
-            let category = categories.find(c => c.type == product.category.type);
-            let weight = product.calculateTotalWeight(product.stockNum);
-            product.stockNum = 0;
-            category.quantityStock = + (category.quantityStock + weight).toFixed(2);
-            storeData("categories", categories);
-            updateCategoriesStockView(categories);
-            let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category.itemID, category.type, weight, "STOCK OUT (PACKAGED)", stockDate);
-            categoryStockHistory.push(newCategoryStockHistory);
-            storeData("categoryStockHistory", categoryStockHistory);
-            let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product.id, product.name, product.category.itemID, product.category.type, product.stockNum, "STOCK OUT (CHANGED PRODUCT WEIGHT)", stockDate);
-            productStockHistory.push(newProductStockHistory);
-            storeData("productStockHistory", productStockHistory);
-            updateTable(productStockHistory, "product-stock-history-table");
-        }
-        product.weight = productWeight; 
-        let newProductStockHistory = productStockHistory.filter(p => p.productId == product.id && p.categoryId == product.category.itemID);
-        newProductStockHistory.forEach(p => {
-            p.productName = productName;
-            p.categoryType = categoryType;
-        });
-        storeData("productStockHistory", productStockHistory);
-        updateTable(productStockHistory, "product-stock-history-table");
         storeData("products", products);
-        updateTable(products, "product-table");
-        updateProductsStockView(products);
         updateProductsTable(products);
+        updateProductsStockView(products);
         document.getElementById("edit-product-dialog").close();
-    }else{
-        if (categoryType == "") {
-            alert("Please select a valid category");
-        } else if (productName == "") {
-            alert("Product name cannot be empty");
-        } else if (productWeight <= 0) {
-            alert("Product weight must be greater than 0");
-        } else if (productPrice <= 0) {
-            alert("Product price must be greater than 0");
-        } else if (reorderLevel <= 0) {
-            alert("Reorder level must be greater than 0");
-        } else if (stockDate == "") {
-            alert("Please provide a valid stock date");
-        } else if (isSameProduct) {
-            alert("Product with the same name or weight already exists in the same category");
-        }
     }
 });
-
-function deleteProduct(product, stockDate){
-    let category = categories.find(c => c.type == product.category.type);
-    let weight = product.calculateTotalWeight(product.stockNum);
-    category.quantityStock = + (category.quantityStock + weight).toFixed(2);
-    storeData("categories", categories);
-    let newCategoryStockHistory = new CategoryStockHistory(generateID(categoryStockHistory), category.itemID, category.type, weight, "STOCK OUT (PRODUCT DELETED)", stockDate);
-    categoryStockHistory.push(newCategoryStockHistory);
-    storeData("categoryStockHistory", categoryStockHistory);
-    let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product.id, product.name, product.category.itemID, product.category.type, product.stockNum, "STOCK OUT (PRODUCT DELETED)", stockDate);
-    productStockHistory.push(newProductStockHistory);
-    storeData("productStockHistory", productStockHistory);
-    let tempProducts = products.filter(p => p.id != product.id);
-    storeData("products", tempProducts);
-    return tempProducts;
-}
 
 document.querySelector("#delete-product-submit-button").addEventListener("click", function(event){
     event.preventDefault();
     let productID = document.getElementById("delete-product-id").value;
-    let stockDate = document.getElementById("delete-product-stock-date").value;
     let product = products.find(p => p.id == productID);
-    let tempProducts = deleteProduct(product, stockDate);
-    updateProductsTable(tempProducts);
-    updateProductsStockView(tempProducts);
-    updateCategoriesStockView(categories);
-    document.getElementById("delete-product-dialog").close();
+    let order = orders.find(o => o.product == productID);
+    if(order == null && product.stockNum == 0){
+        let tempProducts = products.filter(p => p.id != productID);
+        storeData("products", tempProducts);
+        let newProductStockHistory = productStockHistory.filter(p => p.product.id != productID);
+        storeData("productStockHistory", newProductStockHistory);
+        updateProductsTable(tempProducts);
+        updateProductsStockView(tempProducts);
+        updateCategoriesStockView(categories);
+        updateTable(newProductStockHistory, "product-stock-history-table");
+        document.getElementById("delete-product-dialog").close();
+    }else if(order != null){
+        alert("Cannot delete product with active orders");
+    }else if(product.stockNum > 0){
+        alert("Cannot delete product with stock");
+    }
 });
 
 document.querySelector("#select-period").addEventListener("change", function(){
@@ -347,18 +300,18 @@ document.querySelector("#filter-product-history").addEventListener("click", func
     let product = products.find(p => p.name == productName);
 
     if (category != null && product == null && startDate == ""){
-        filteredProductStockHistory = productStockHistory.filter(p => p.categoryId == category.itemID);
+        filteredProductStockHistory = productStockHistory.filter(p => p.category.id == category.id);
     }else if (category != null && product != null && startDate == ""){
-        filteredProductStockHistory = productStockHistory.filter(p => p.categoryId == category.itemID && p.productId == product.id);
+        filteredProductStockHistory = productStockHistory.filter(p => p.category.id == category.id && p.product.id == product.id);
     }else if (category != null && product == null && startDate != ""){
-        filteredProductStockHistory = productStockHistory.filter(p => p.categoryId == category.itemID && new Date(p.stockDate) >= new Date(startDate) && new Date(p.stockDate) <= new Date(endDate));
+        filteredProductStockHistory = productStockHistory.filter(p => p.category.id == category.id && new Date(p.stockDate) >= new Date(startDate) && new Date(p.stockDate) <= new Date(endDate));
     }else if (category != null && product != null && startDate != ""){
-        filteredProductStockHistory = productStockHistory.filter(p => p.categoryId == category
-        .itemID && p.productId == product.id && new Date(p.stockDate) >= new Date(startDate) && new Date(p.stockDate) <= new Date(endDate));
+        filteredProductStockHistory = productStockHistory.filter(p => p.category.id == category
+        .id && p.product.id == product.id && new Date(p.stockDate) >= new Date(startDate) && new Date(p.stockDate) <= new Date(endDate));
     }else if (category == null && product != null && startDate == ""){
-        filteredProductStockHistory = productStockHistory.filter(p => p.productId == product.id);
+        filteredProductStockHistory = productStockHistory.filter(p => p.product.id == product.id);
     }else if (category == null && product != null && startDate != ""){
-        filteredProductStockHistory = productStockHistory.filter(p => p.productId == product.id && new Date(p.stockDate) >= new Date(startDate) && new Date(p.stockDate) <= new Date(endDate));
+        filteredProductStockHistory = productStockHistory.filter(p => p.product.id == product.id && new Date(p.stockDate) >= new Date(startDate) && new Date(p.stockDate) <= new Date(endDate));
     }else if (category == null && product == null && startDate != ""){
         filteredProductStockHistory = productStockHistory.filter(p => new Date(p.stockDate) >= new Date(startDate) && new Date(p.stockDate) <= new Date(endDate));
     }else{
