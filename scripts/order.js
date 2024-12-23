@@ -1,13 +1,14 @@
 import OrderHistory from './orderHistory.js';
 
 class Order{
-    constructor(id, customer, product, productNum, productPrice, price, status, date){
+    constructor(id, customer, product, productNum, productPrice, price, taxRate, status, date){
         this.id = id;
         this.customer = customer;
         this.product = product;
         this.productNum = productNum;
         this.productPrice = productPrice;
         this.price = price;
+        this.taxRate = taxRate;
         this.status = status;
         this.date = date;
     }
@@ -19,7 +20,7 @@ class Order{
         return orderHistory;
     }
 
-    
+
     toTableRow(){
         return  `
             <tr>

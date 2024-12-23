@@ -5,6 +5,7 @@ import {storeData, retrieveData, getFarmers, farmers, purchases,
 import Customer from './customer.js';
 import Order from './order.js';
 import OrderHistory from './orderHistory.js';
+import ProductStockHistory from './productStockHistory.js';
 
 
 function updateEverything(){
@@ -41,10 +42,29 @@ function addEditCustomerButtonListeners(){
     });
 }
 
+function addDeleteCustomerButtonListeners(){
+    document.querySelectorAll(".delete-customer-button").forEach(button =>{
+        button.addEventListener("click", function(event){
+            event.preventDefault();
+            let customer = customers.find(cust => cust.id == event.target.id);
+            let order = orders.find(ord => ord.customer.id == customer.id);
+            if (order != null){
+                alert("Customer has orders, cannot delete");
+                return;
+            }
+            let index = customers.indexOf(customer);
+            customers.splice(index, 1);
+            storeData("customers", customers);
+            updateCustomerTable(customers);
+        });
+    });
+}
+
 function updateCustomerTable(customerList){
     updateTable(customerList, "customers-table");
     //add Event Listeners
     addEditCustomerButtonListeners();
+    addDeleteCustomerButtonListeners();
 }
 
 function addRowtoCustomerTable(customer){
@@ -52,6 +72,7 @@ function addRowtoCustomerTable(customer){
     updateTableRowStyles("customers-table");
     //add Event Listeners
     addEditCustomerButtonListeners();
+    addDeleteCustomerButtonListeners();
 }
 
 function updateOrdersHistoryTable(orderHistoryList, divClass, tabledID){
@@ -275,12 +296,19 @@ document.querySelector(".add-sale-submit-button").addEventListener("click", func
             alert("Not enough stock");
             return;
         }
-        let order = new Order(generateID(orders), customer, product, productNum, product.price, totalPrice, status, date);
+
+        let order = new Order(generateID(orders), customer, product, productNum, product.price, totalPrice, product.taxRate, status, date);
         orders.push(order);
         storeData("orders", orders);
         addRowtoOrderTable(order);
+
         product.stockNum -= productNum;
         storeData("products", products);
+
+        let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product, product.category, parseInt(order.productNum), "STOCK OUT (SOLD)", date);
+        productStockHistory.push(newProductStockHistory);
+        storeData("productStockHistory", productStockHistory);
+
         let newOrderHistory = order.createHistory(generateID(ordersHistory), status, date);
         ordersHistory.push(newOrderHistory);
         storeData("ordersHistory", ordersHistory);
@@ -312,11 +340,17 @@ document.querySelector(".update-status-submit-button").addEventListener("click",
             let product = products.find(prod => prod.id == order.product.id);
             product.stockNum = parseInt(product.stockNum) + parseInt(order.productNum);
             storeData("products", products);
+
+            let newProductStockHistory = new ProductStockHistory(generateID(productStockHistory), product, product.category, parseInt(order.productNum), "STOCK IN (SALE CANCELLED)", date);
+            productStockHistory.push(newProductStockHistory);
+            storeData("productStockHistory", productStockHistory);
+
         }else if(order.status == "Delivered"){
             alert("Order delivered, you cannot change!");
             return;
         }
         order.status = status;
+        order.date = date;
         storeData("orders", orders);
         updateOrderTable(orders);
         let newOrderHistory = order.createHistory(generateID(ordersHistory), status, date);
@@ -382,19 +416,35 @@ document.querySelector("#clear-filter-order-history-button").addEventListener("c
     }
 });
 
-document.querySelector("#search-sales").addEventListener("keyup", function(event){
-    let tempOrders = [...orders];
-    let searchValue = document.querySelector("#search-sales").value.toLowerCase();
-    let searchResults = tempOrders.filter(order => order.customer.name.toLowerCase().includes(searchValue.toLowerCase()));
-    searchResults = searchResults.concat(tempOrders.filter(order => order.product.toString().toLowerCase().includes(searchValue.toLowerCase())));
-    searchResults = searchResults.concat(tempOrders.filter(order => order.status.toLowerCase().includes(searchValue.toLowerCase())));
-    updateOrderTable(searchResults);
+document.querySelector("#search-sales").addEventListener("keyup", function(event) {
+    const searchValue = document.querySelector("#search-sales").value.toLowerCase();
+    if (!searchValue) {
+        updateOrderTable(orders);
+        return;
+    }
+    
+    const filteredOrders = orders.filter(order => 
+        order.customer.name.toLowerCase().includes(searchValue) ||
+        order.product.toString().toLowerCase().includes(searchValue) ||
+        order.status.toLowerCase().includes(searchValue) ||
+        order.date.toLowerCase().includes(searchValue)
+    );
+
+    updateOrderTable(filteredOrders);
 });
 
-document.querySelector("#search-order-history").addEventListener("keyup", function(event){
-    let searchValue = document.querySelector("#search-order-history").value.toLowerCase();
-    let searchResults = ordersHistory.filter(order => order.customerName.toLowerCase().includes(searchValue.toLowerCase()));
-    searchResults = searchResults.concat(ordersHistory.filter(order => order.productName.toLowerCase().includes(searchValue.toLowerCase())));
-    searchResults = searchResults.concat(ordersHistory.filter(order => order.status.toLowerCase().includes(searchValue.toLowerCase())));
-    updateOrdersHistoryTable(searchResults, ".generate-csv-button-area", "order-history-table");
+document.querySelector("#search-order-history").addEventListener("keyup", function(event) {
+    const searchValue = document.querySelector("#search-order-history").value.toLowerCase();
+    if (!searchValue) {
+        updateOrdersHistoryTable(ordersHistory, ".generate-csv-button-area", "order-history-table");
+        return;
+    }
+
+    const filteredOrders = ordersHistory.filter(order =>
+        order.customerName.toLowerCase().includes(searchValue) ||
+        order.productName.toLowerCase().includes(searchValue) ||
+        order.status.toLowerCase().includes(searchValue)
+    );
+
+    updateOrdersHistoryTable(filteredOrders, ".generate-csv-button-area", "order-history-table");
 });

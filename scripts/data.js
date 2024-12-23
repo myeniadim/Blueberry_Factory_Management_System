@@ -149,7 +149,7 @@ function getOrders(){
             loadedOrders.forEach(order => {
                 let customer = customers.find(c => c.id == order.customer.id);
                 let product = products.find(p => p.id == order.product.id);
-                ordersList.push(new Order(order.id, customer, product, order.productNum, order.productPrice, order.price, order.status, order.date));
+                ordersList.push(new Order(order.id, customer, product, order.productNum, order.productPrice, order.price, order.taxRate, order.status, order.date));
             });
         }
     } catch (error) {
