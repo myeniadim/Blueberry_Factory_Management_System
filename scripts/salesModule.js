@@ -1,4 +1,4 @@
-import {openDialog, addRowToTable, updateTableRowStyles, updateTable, generateItemID, generateID, calculateDatePeriod, createCSVArea} from './script.js';
+import {openDialog, addRowToTable, updateTableRowStyles, updateTable, generateItemID, generateID, calculateDatePeriod, createCSVArea, clearTable} from './script.js';
 import {storeData, retrieveData, getFarmers, farmers, purchases, 
     changeableDatas, categories, categoryStockHistory, products, 
     productStockHistory, customers, orders, ordersHistory} from './data.js';
@@ -11,7 +11,17 @@ function updateEverything(){
     updateCustomerTable(customers);
     //add other tables
     updateOrderTable(orders);
-    updateTable(ordersHistory, "order-history-table");
+    updateOrdersHistoryTable(ordersHistory, ".generate-csv-button-area", "order-history-table");
+    let tempOrders = [...orders];
+    tempOrders = tempOrders.filter(order => order.status == "Delivered");
+    let firstOrder = tempOrders[0];
+    let lastOrder = tempOrders[tempOrders.length - 1];
+    if (firstOrder && lastOrder){
+        let totalRevenue = calculateRevenue(tempOrders);
+        updateCardView(["ALL ORDERS", firstOrder.date, lastOrder.date, "ALL CUSTOMERS", "ALL PRODUCTS", totalRevenue]);
+        let csvFileName = `${firstOrder.date}_to_${lastOrder.date}_allCustomers_allProducts_totalRevenue:${totalRevenue}.csv`;
+        updateRevenueTable(tempOrders, csvFileName);
+    }
 }
 
 updateEverything();
@@ -42,6 +52,41 @@ function addRowtoCustomerTable(customer){
     updateTableRowStyles("customers-table");
     //add Event Listeners
     addEditCustomerButtonListeners();
+}
+
+function updateOrdersHistoryTable(orderHistoryList, divClass, tabledID){
+    updateTable(orderHistoryList, tabledID);
+    createCSVArea(divClass, orderHistoryList, "order-history.csv");
+}
+
+
+function updateRevenueTable(orderList, fileName){
+    const table = document.querySelector("#revenue-table");
+    clearTable("revenue-table");
+    orderList.forEach(order => {
+        let row = order.toRevenueTableRow();
+        table.innerHTML += row;
+    });
+    updateTableRowStyles("revenue-table");
+    createCSVArea(".generate-revenue-csv-button-area", orderList, fileName);
+}
+
+function updateCardView(valueList){
+    let cardArea = document.querySelector(".card-view");
+    cardArea.innerHTML = "";
+    cardArea.innerHTML += `
+            <h2>${valueList[0]}</h3>
+            <h3>START DATE: ${valueList[1]}</h3>
+            <h3>END DATE: ${valueList[2]}</h3>
+            <h3>SELECTED CUSTOMER: ${valueList[3]}</h3>
+            <h3>SELECTED PRODUCT: ${valueList[4]}</h3>
+            <div>TOTAL REVENUE: ${valueList[5]}$</div>
+        `;
+}
+
+function calculateRevenue(tempOrders){
+    let totalRevenue = tempOrders.reduce((acc, order) => acc + parseFloat(order.price), 0);
+    return totalRevenue;
 }
 
 document.querySelector(".add-customer-button").addEventListener("click", function(event){
@@ -135,7 +180,7 @@ function addViewOrderHistoryButtonListeners(){
             event.preventDefault();
             let order = orders.find(ord => ord.id == event.target.id);
             let orderHistory = ordersHistory.filter(ordHist => ordHist.orderId == order.id);
-            updateTable(orderHistory, "order-history-table-detail");
+            updateOrdersHistoryTable(orderHistory, ".order-history-table-detail-csv", "order-history-table-detail");
             openDialog("view-history-dialog");
         });
     });
@@ -177,6 +222,28 @@ document.querySelector("#sale-product-id").addEventListener("keyup", function(ev
         document.querySelector("#sale-product-name").value = product.toString();
     }else{
         document.querySelector("#sale-product-name").value = "";
+    }
+});
+
+document.querySelector("#filter-customer-id").addEventListener("keyup", function(event){
+    event.preventDefault();
+    let customerID = document.querySelector("#filter-customer-id").value;
+    let customer = customers.find(cust => cust.id == customerID);
+    if (customer){
+        document.querySelector("#filter-customer-name").value = customer.name;
+    }else{
+        document.querySelector("#filter-customer-name").value = "";
+    }
+});
+
+document.querySelector("#filter-product-id").addEventListener("keyup", function(event){
+    event.preventDefault();
+    let productID = document.querySelector("#filter-product-id").value;
+    let product = products.find(prod => prod.id == productID);
+    if (product){
+        document.querySelector("#filter-product-name").value = product.toString();
+    }else{
+        document.querySelector("#filter-product-name").value = "";
     }
 });
 
@@ -260,4 +327,74 @@ document.querySelector(".update-status-submit-button").addEventListener("click",
     }else{
         alert("Please fill out all fields");
     }
+});
+
+document.querySelector("#select-period").addEventListener("change", function(event){
+    let option = document.querySelector("#select-period").value;
+    let startDate = document.querySelector("#filter-start-date").value;
+    if (startDate != "" && option != "select"){
+        document.querySelector("#filter-end-date").value = new Date(calculateDatePeriod(startDate, option)).toISOString().split("T")[0];
+    }
+});
+
+document.querySelector(".filter-order-history-submit-button").addEventListener("click", function(event){
+    event.preventDefault();
+    let tempOrders = [...orders];
+    let orderList = tempOrders.filter(order => order.status == "Delivered");
+    let customerId = document.querySelector("#filter-customer-id").value;
+    let customerName = document.querySelector("#filter-customer-name").value;
+    let productId = document.querySelector("#filter-product-id").value;
+    let productName = document.querySelector("#filter-product-name").value;
+    let startDate = document.querySelector("#filter-start-date").value;
+    let endDate = document.querySelector("#filter-end-date").value;
+
+    let filteredOrderList;
+
+    if (customerName != "" && productName == "" && endDate == ""){
+        filteredOrderList = orderList.filter(order => order.customer.id == customerId);
+    }else if (customerName == "" && productName != "" && endDate == ""){
+        filteredOrderList = orderList.filter(order => order.product.id == productId);
+    }else if(customerName == "" && productName == "" && endDate != ""){
+        filteredOrderList = orderList.filter(order => new Date(order.date) >= new Date(startDate) && new Date(order.date) <= new Date(endDate));
+    }else if(customerName != "" && productName != "" && endDate == ""){
+        filteredOrderList = orderList.filter(order => order.customer.id == customerId && order.product.id == productId);
+    }else if(customerName != "" && productName == "" && endDate != ""){
+        filteredOrderList = orderList.filter(order => order.customer.id == customerId && new Date(order.date) >= new Date(startDate) && new Date(order.date) <= new Date(endDate));
+    }else if(customerName == "" && productName != "" && endDate != ""){
+        filteredOrderList = orderList.filter(order => order.product.id == productId && new Date(order.date) >= new Date(startDate) && new Date(order.date) <= new Date(endDate));
+    }else if(customerName != "" && productName != "" && endDate != ""){
+        filteredOrderList = orderList.filter(order => order.customer.id == customerId && order.product.id == productId && new Date(order.date) >= new Date(startDate) && new Date(order.date) <= new Date(endDate));
+    }else{
+        alert("Please fill out at least one field");
+        return;
+    }
+    console.log(productName);
+    updateRevenueTable(filteredOrderList, "filtered_revenue.csv");
+    updateCardView(["FILTERED ORDERS", startDate, endDate, customerName, productName, calculateRevenue(filteredOrderList)]);
+    document.getElementById("filter-order-history-dialog").close();
+});
+
+document.querySelector("#clear-filter-order-history-button").addEventListener("click", function(event){
+    let filteredOrderList = orders.filter(order => order.status == "Delivered");
+    updateRevenueTable(filteredOrderList, "order-history.csv");
+    if (filteredOrderList.length > 0){
+        updateCardView(["ALL ORDERS", filteredOrderList[0].date, filteredOrderList[orders.length - 1].date, "ALL CUSTOMERS", "ALL PRODUCTS", calculateRevenue(filteredOrderList)]);
+    }
+});
+
+document.querySelector("#search-sales").addEventListener("keyup", function(event){
+    let tempOrders = [...orders];
+    let searchValue = document.querySelector("#search-sales").value.toLowerCase();
+    let searchResults = tempOrders.filter(order => order.customer.name.toLowerCase().includes(searchValue.toLowerCase()));
+    searchResults = searchResults.concat(tempOrders.filter(order => order.product.toString().toLowerCase().includes(searchValue.toLowerCase())));
+    searchResults = searchResults.concat(tempOrders.filter(order => order.status.toLowerCase().includes(searchValue.toLowerCase())));
+    updateOrderTable(searchResults);
+});
+
+document.querySelector("#search-order-history").addEventListener("keyup", function(event){
+    let searchValue = document.querySelector("#search-order-history").value.toLowerCase();
+    let searchResults = ordersHistory.filter(order => order.customerName.toLowerCase().includes(searchValue.toLowerCase()));
+    searchResults = searchResults.concat(ordersHistory.filter(order => order.productName.toLowerCase().includes(searchValue.toLowerCase())));
+    searchResults = searchResults.concat(ordersHistory.filter(order => order.status.toLowerCase().includes(searchValue.toLowerCase())));
+    updateOrdersHistoryTable(searchResults, ".generate-csv-button-area", "order-history-table");
 });

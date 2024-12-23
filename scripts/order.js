@@ -18,6 +18,7 @@ class Order{
             this.product.id, this.product.toString(), this.productNum, this.productPrice, this.price, status, date);
         return orderHistory;
     }
+
     
     toTableRow(){
         return  `
@@ -39,6 +40,28 @@ class Order{
                 </td>
             </tr>
         `;
+    }
+
+    toRevenueTableRow(){
+        return  `
+            <tr>
+                <td>${this.id}</td>
+                <td>${this.customer.name}</td>
+                <td>${this.product.toString()}</td>
+                <td>${this.productNum}</td>
+                <td>${this.product.price}$</td>
+                <td>${this.price}$</td>
+                <td>${this.date}</td>
+            </tr>
+        `;
+    }
+
+    toCSVRow(){
+        return  `${this.id},${this.customer.name},${this.product.toString()},${this.productNum},${this.product.price},${this.price},${this.date}\n`;
+    }
+
+    toCSVHeader(){
+        return "Order ID,Customer Name,Product Name,Product Quantity,Product Price,Total Price,Date\n";
     }
 
 }

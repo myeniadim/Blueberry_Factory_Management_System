@@ -31,6 +31,15 @@ class OrderHistory{
             </tr>
         `;
     }
+
+    toCSVHeader(){
+        return "ID,Order ID,Customer ID,Customer Name,Product ID,Product Name,Price,Status,Date\n";
+    }
+
+    toCSVRow(){
+        return `${this.id},${this.orderId},${this.customerId},${this.customerName},${this.productId},${this.productName},${this.price},${this.status},${this.date}\n`;
+    }
 }
+
 
 export default OrderHistory;

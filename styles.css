@@ -108,6 +108,7 @@ header{
 }
 
 .main-navbar button{
+    font-family: "Space Grotesk", sans-serif;
     flex-basis: 10rem;
     text-decoration: none;
     text-align: center;
@@ -322,7 +323,7 @@ dialog{
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.card-view h3{
+.card-view h3, .card-view h2{
     margin: 0;
     padding: 0;
 }
@@ -393,4 +394,20 @@ hr{
 
 .table-dialog>button{
     float: right;
+}
+
+#sales-revenue{
+    margin-bottom: 2rem;
+}
+
+.generate-revenue-csv-button-area{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+#csv{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
 }
