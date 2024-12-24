@@ -27,6 +27,14 @@ class Purchase{
             </tr>
         `;
     }
+
+    toCSVHeader(){
+        return "Purchase ID,Farmer ID,Farmer Name,Purchase Date,Quantity,Price Per KG,Total Price\n";
+    }
+
+    toCSVRow(){
+        return `${this.id},${this.farmer.id},${this.farmer.name},${this.date},${this.quantity}kg,${this.priceperkg}$,${this.price.toFixed(2)}$\n`;
+    }
 }
 
 export default Purchase;

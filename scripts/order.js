@@ -66,7 +66,7 @@ class Order{
                 <td>${this.product.toString()}</td>
                 <td>${this.price}$</td>
                 <td>${this.taxRate}$</td>
-                <td>${this.tax}$</td>
+                <td>${this.tax.toFixed(2)}$</td>
                 <td>${this.date}</td>
             </tr>
         `;
@@ -77,7 +77,7 @@ class Order{
     }
 
     toCSVRowTax(){
-        return `${this.id},${this.customer.name},${this.product.toString()},${this.price},${this.taxRate},${this.tax},${this.date}\n`
+        return `${this.id},${this.customer.name},${this.product.toString()},${this.price},${this.taxRate},${this.tax.toFixed(2)},${this.date}\n`
     }
 
     toCSVRow(){

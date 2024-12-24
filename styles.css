@@ -512,3 +512,53 @@ dialog h3{
     gap: 1rem;
     margin-bottom: 0.3rem;
 }
+
+#csv-area{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+#financial-report{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    grid-gap: 5vh;
+    justify-content: center;
+}
+
+
+#last-card{
+    margin-left: 35%;
+    margin-top: 5%;
+}
+
+.report-filter-period-area-container{
+    display: none;
+    background-color: #8AAEC7;
+    color: #34495e;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    gap: 1rem;
+}
+
+.report-filter-period-area{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.report-filter-button-area{
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.report-filter-button-area button{
+    width: 15rem;
+}

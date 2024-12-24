@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&family=Satisfy&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <script type="module" src="./scripts/script.js"></script>
+    <script type="module" src="./scripts/reportModule.js"></script>
 </head>
 
 <body>
@@ -29,7 +31,115 @@
         </div>
     </nav>
     <main>
-        <h1>Comprehensive Report Generation</h1>
+        <header>
+            <h1>Comprehensive Report Generation</h1>
+            <div class="main-navbar">
+                <button id="navbar-period-dashbord-button">Dashboard</button>
+                <button id="navbar-period-report-button">Periodly Report</button>
+        </header>
+
+        <div class="main-content">
+            <div class="report-dashboard-section">
+                <div class="report-filter-period-area-container">
+                    <div class="report-filter-period-area">
+                        <div class="label-area">
+                            <label for="report-start-date">Start Date</label>
+                            <input type="date" id="report-start-date" name="report-start-date">
+                        </div>
+                        <div class="label-area">
+                            <label for="report-select-period">Select Period</label>
+                            <select name="report-select-period" id="report-select-period">
+                                <option value="select">Select Period</option>
+                                <option value="daily">daily</option>
+                                <option value="weekly">weekly</option>
+                                <option value="monthly">monthly</option>
+                                <option value="yearly">yearly</option>
+                            </select>
+                        </div>
+                        <div class="report-area">
+                            <label for="report-end-date">End Date</label>
+                            <input type="date" id="report-end-date" name="report-end-date">
+                        </div>
+                    </div>
+                    <div class="report-filter-button-area">
+                        <button id="generate-report-submit-button">GENERATE REPORT</button>
+                        <button id="clear-report-submit-button">CLEAR FILTER</button>
+                    </div>
+                </div>
+            </div>
+                <h2>Stock Levels</h2>
+                <div class="supplier-stock-level-area">
+                    <h2>Stock Level From Supplier</h2>
+                    <div class="card-view-solo-area">
+                        <div class="card-view" id="solo">
+                        </div>
+                    </div>
+                </div>
+                <div class="supplier-stock-csv-area" id="csv-area">
+                    <label for="purchase-history-csv">DOWNLOAD PURCHASE HISTORY CSV</label>
+                    <button id="purchase-history-csv">DOWNLOAD CSV</button>
+                </div>
+                <h2>Stock Levels of Categories</h2>
+                <div class="stock-level-area" id="category-stock-level-area">
+                    <div class="card-view-area">
+                    </div>
+                </div>
+                <div class="category-stock-csv-area" id="csv-area">
+                    <label for="category-stock-history-csv">DOWNLOAD CATEGORY STOCK HISTORY CSV</label>
+                    <button id="category-stock-history-csv">DOWNLOAD CSV</button>
+                </div>
+                <div class="products-stock-level-area">
+                    <h2>Stock Levels Of Products</h2>
+                    <div class="stock-level-area">
+                        <div class="card-view-area" id="product-stock-level-area">
+                        </div>
+                    </div>
+                </div>
+                <div class="product-stock-csv-area" id="csv-area">
+                    <label for="product-stock-history-csv">DOWNLOAD PRODUCT STOCK HISTORY CSV</label>
+                    <button id="product-stock-history-csv">DOWNLOAD CSV</button>
+                </div>
+                <h2>Financial Dashboard</h2>
+                <div class="dashboard-cards-area" id="financial-report">
+                    <div class="dashboard-cards-with-csv-area">
+                        <div class="dashboard-card" id="color1">
+                            <h3>Total Revenue</h3>
+                            <p id="total-revenue"></p>
+                        </div>
+                        <div class="product-stock-csv-area" id="csv-area">
+                            <label for="order-history-csv">DOWNLOAD ORDER HISTORY CSV</label>
+                            <button id="order-history-csv">DOWNLOAD CSV</button>
+                        </div>
+                    </div>
+                    <div class="dashboard-cards-with-csv-area">
+                        <div class="dashboard-card" id="color2">
+                            <h3>Total Expenses</h3>
+                            <p id="total-expenses"></p>
+                        </div>
+                        <div class="product-stock-csv-area" id="csv-area">
+                            <label for="purchase-history-csv">DOWNLOAD PURCHASE HISTORY CSV</label>
+                            <button id="purchase-history-2-csv">DOWNLOAD CSV</button>
+                        </div>
+                    </div>
+                    <div class="dashboard-cards-with-csv-area">
+                        <div class="dashboard-card" id="color2">
+                            <h3>Total Taxes from Orders</h3>
+                            <p id="total-taxes"></p>
+                        </div>
+                        <div class="product-stock-csv-area" id="csv-area">
+                            <label for="tax-history-csv">DOWNLOAD TAX HISTORY CSV</label>
+                            <button id="tax-history-csv">DOWNLOAD CSV</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard-cards-area" id="last-card">
+                    <div class="dashboard-card" id="color1">
+                        <h3>Net Income</h3>
+                        <p id="net-income"></p>
+                    </div>
+                </div>
+            </section>
+        </div>
     </main>
 </body>
 </html></html>

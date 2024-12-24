@@ -145,6 +145,7 @@ document.querySelector("#clear-tax-submit-button").addEventListener("click", fun
     document.querySelector("#tax-select-period").value = "select";
     document.querySelector("#tax-end-date").value = "";
     clearTable("tax-table");
+    document.querySelector("#tax-total-tax").textContent = 0 + "$";
 });
 
 document.querySelector("#filter-tax-submit-button").addEventListener("click", function(event){

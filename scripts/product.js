@@ -47,6 +47,20 @@ class Product{
         `;
     }
 
+    toCardViewWithOutButtons(){
+        return `
+        <div class="card-view" id="${this.getStockAlertID()}">
+            <div class="card-view-header">
+                <h3>Product ID: ${this.id}</h3>
+                <h3>${this.category.type.toUpperCase()} BLUEBERRIES</h3>
+                <h3>${this.name.toUpperCase()} PACKAGE (${this.weight}kg)</h3>
+            </div>
+            <div>Stock Level: <b>${this.stockNum} Packages</b></div>
+            <div>Stock Levels are <b>${this.getStockAlert()}</b></div>
+        </div>
+        `;
+    }
+
     toTableRow(){
         return `
         <tr>
@@ -68,7 +82,7 @@ class Product{
     }
 
     toString(){
-        return(this.category.type + " " + this.name + " (" + this.weight + "kg)  ");
+        return(this.category.type + " " + this.name + " (" + this.weight + "kg)");
     }
 
 }
