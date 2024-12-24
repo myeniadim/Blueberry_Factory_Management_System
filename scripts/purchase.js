@@ -5,8 +5,9 @@ class Purchase{
         this.id = purchaseId;
         this.farmer = farmer;
         this.date = date;
-        this.quantity = quantity;
-        this.priceperkg = priceperkg;
+        this.quantity = parseFloat(quantity);
+        this.priceperkg = parseFloat(priceperkg);
+        this.price = this.quantity * this.priceperkg;
     }
 
     calculateTotalPrice(){
@@ -22,7 +23,7 @@ class Purchase{
                 <td>${this.date}</td>
                 <td>${this.quantity}kg</td>
                 <td>${this.priceperkg}$</td>
-                <td>${this.calculateTotalPrice()}$</td>
+                <td>${this.price.toFixed(2)}$</td>
             </tr>
         `;
     }

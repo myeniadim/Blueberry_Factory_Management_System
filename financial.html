@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&family=Satisfy&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <script type="module" src="./scripts/script.js" defer></script>
+    <script type="module" src="./scripts/financialModule.js" defer></script>
 </head>
 
 <body>
@@ -29,9 +31,143 @@
         </div>
     </nav>
     <main>
-        <h1>Financial Analysis</h1>
-        <p>Welcome to the financial analysis section. Here you can view and analyze the financial performance of the Blueberry Factory.</p>
-        <!-- Add your financial analysis content here -->
+        <header>
+            <h1>Financial Analysis Module</h1>
+                <div class="main-navbar">
+                    <button class="navbar-button" id="dashboard-section">Dashboard</button>
+                    <button class="navbar-button" id="periodly-financial-analysis">Periodly Financial Analysis</button>
+                    <button class="navbar-button" id="tax-calculation">Tax Calculation</button>
+                </div>
+        </header>
+
+        <div class="main-content">
+            <section class="dashboard-section">
+                <h2>Dashboard</h2>
+                <div class="dashboard-cards-area">
+                    <div class="dashboard-card" id="color1">
+                        <h3>Total Revenue</h3>
+                        <p id="total-revenue">/p>
+                    </div>
+                    <div class="dashboard-card" id="color2">
+                        <h3>Total Expenses</h3>
+                        <p id="total-expenses"></p>
+                    </div>
+                    <div class="dashboard-card" id="color2">
+                        <h3>Total Taxes from Orders</h3>
+                        <p id="total-taxes"></p>
+                    </div>
+                    <div class="dashboard-card" id="color1">
+                        <h3>Net Income</h3>
+                        <p id="net-income"></p>
+                    </div>
+                </div>
+            </section>
+            <section class="periodly-financial-analysis">
+                <h2>Filter For Selected Period</h2>
+                <div class="analysis-area">
+                    <div class="dashboard-solo-card-area" id="analysis">
+                        <div class="dashboard-solo-card">
+                            <h3>Period</h3>
+                            <label for="period-start-date">Start Date</label>
+                            <input type="date" id="period-start-date" name="period-start-date">
+                            <label for="">Period</label>
+                            <select name="period-select-period" id="period-select-period">
+                                <option value="select">Select Period</option>
+                                <option value="daily">daily</option>
+                                <option value="weekly">weekly</option>
+                                <option value="monthly">monthly</option>
+                                <option value="yearly">yearly</option>
+                            </select>
+                            <label for="period-end-date">End Date</label>
+                            <input type="date" id="period-end-date" name="period-end-date" readonly>
+                            <div class="button-area">
+                                <button id="calculate-period-submit-button">Calculate</button>
+                                <button id="clear-period-submit-button">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-cards-area">
+                        <div class="dashboard-card" id="color1">
+                            <h3>Total Revenue</h3>
+                            <p id="period-revenue">0$</p>
+                        </div>
+                        <div class="dashboard-card" id="color2">
+                            <h3>Total Expenses</h3>
+                            <p id="period-expenses">0$</p>
+                        </div>
+                        <div class="dashboard-card" id="color2">
+                            <h3>Total Taxes from Orders</h3>
+                            <p id="period-tax">0$</p>
+                        </div>
+                        <div class="dashboard-card" id="color1">
+                            <h3>Net Income</h3>
+                            <p id="period-income">0$</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="tax-calculation">
+                <h2>Tax Calculation</h2>
+                <div class="analysis-area">
+                    <div class="dashboard-solo-card-area">
+                        <div class="dashboard-solo-card">
+                            <h3>Filter Order History</h3>
+                            <label for="tax-customer-id">Customer Id</label>
+                            <input type="number" id="tax-customer-id" name="tax-customer-id">
+                            <label for="tax-customer-name">Customer Name</label>
+                            <input type="text" id="tax-customer-name" name="tax-customer-name" readonly>
+                            <label for="tax-product-id">Product id</label>
+                            <input type="number" id="tax-product-id" name="tax-product-id">
+                            <label for="tax-product-name">Product Name</label>
+                            <input type="text" id="tax-product-name" name="tax-product-name" readonly>
+                            <label for="tax-start-date">Start Date</label>
+                            <input type="date" id="tax-start-date" name="tax-start-date">
+                            <label for="tax-select-period">Period</label>
+                            <select name="tax-select-period" id="tax-select-period">
+                                <option value="select">Select Period</option>
+                                <option value="daily">daily</option>
+                                <option value="weekly">weekly</option>
+                                <option value="monthly">monthly</option>
+                                <option value="yearly">yearly</option>
+                            </select>
+                            <label for="tax-end-date">End Date</label>
+                            <input type="date" id="tax-end-date" name="tax-end-date" readonly>
+                            <div class="button-area">
+                                <button id="filter-tax-submit-button">Calculate</button>
+                                <button id="clear-tax-submit-button">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="invisible-content">
+                        <div class="table-area">
+                            <table id="tax-table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Product Name</th>
+                                        <th>Total Price</th>
+                                        <th>Tax Rate</th>
+                                        <th>Tax</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="dashboard-solo-card-area">
+                            <div class="dashboard-card" id="color2">
+                                <h3>Total Tax for Filtered Order</h3>
+                                <p id="tax-total-tax"></p>
+                            </div>
+                        </div>
+                        <div class="fax-csv-button-area">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </main>
 </body>
 </html></html>

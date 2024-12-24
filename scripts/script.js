@@ -118,9 +118,17 @@ function createCSVArea(btnClassName, objectList, fileName){
 
 function generateCSVFile(objectList, fileName){
     let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += objectList[0].toCSVHeader();
+    if (fileName.includes("tax")){
+        csvContent += objectList[0].toCSVHeaderTax();
+    }else{
+        csvContent += objectList[0].toCSVHeader();
+    }
     objectList.forEach(object => {
-        csvContent += object.toCSVRow();
+        if (fileName.includes("tax")){
+            csvContent += object.toCSVRowTax();
+        }else{
+            csvContent += object.toCSVRow();
+        }
     });
     var encodedUri = encodeURI(csvContent);
     var link = document.createElement("a");

@@ -11,6 +11,7 @@ class Order{
         this.taxRate = taxRate;
         this.status = status;
         this.date = date;
+        this.tax = this.price * this.taxRate;
     }
 
     createHistory(id, status, date){
@@ -57,6 +58,28 @@ class Order{
         `;
     }
 
+    toTaxTableRow(){
+        return  `
+            <tr>
+                <td>${this.id}</td>
+                <td>${this.customer.name}</td>
+                <td>${this.product.toString()}</td>
+                <td>${this.price}$</td>
+                <td>${this.taxRate}$</td>
+                <td>${this.tax}$</td>
+                <td>${this.date}</td>
+            </tr>
+        `;
+    }
+
+    toCSVHeaderTax(){
+        return "Order ID,Customer Name,Product Name,Total Price,Tax Rate,Tax,Date\n";
+    }
+
+    toCSVRowTax(){
+        return `${this.id},${this.customer.name},${this.product.toString()},${this.price},${this.taxRate},${this.tax},${this.date}\n`
+    }
+
     toCSVRow(){
         return  `${this.id},${this.customer.name},${this.product.toString()},${this.productNum},${this.product.price},${this.price},${this.date}\n`;
     }
@@ -64,6 +87,7 @@ class Order{
     toCSVHeader(){
         return "Order ID,Customer Name,Product Name,Product Quantity,Product Price,Total Price,Date\n";
     }
+
 
 }
 

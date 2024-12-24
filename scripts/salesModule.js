@@ -402,7 +402,6 @@ document.querySelector(".filter-order-history-submit-button").addEventListener("
         alert("Please fill out at least one field");
         return;
     }
-    console.log(productName);
     updateRevenueTable(filteredOrderList, "filtered_revenue.csv");
     updateCardView(["FILTERED ORDERS", startDate, endDate, customerName, productName, calculateRevenue(filteredOrderList)]);
     document.getElementById("filter-order-history-dialog").close();

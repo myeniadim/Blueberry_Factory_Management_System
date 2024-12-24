@@ -321,6 +321,7 @@ dialog{
     border: 1px solid #ddd;
     border-radius: 0.5rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: #2c3e50;
 }
 
 .card-view h3, .card-view h2{
@@ -329,15 +330,15 @@ dialog{
 }
 
 #good{
-    background-color: #2ecc71;
+    background-color: #8AAEC7;
 }
 
 #bad{
-    background-color: #e74c3c;
+    background-color: #D98A99;
 }
 
 #solo{
-    background-color: #f39c12;
+    background-color: #B0AEDB;
 }
 
 .card-view-solo-area .card-view div{
@@ -361,13 +362,12 @@ datalist{
     overflow-y: auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     height: auto;
-    color: #F2F2F2;
     font-size: 1.1rem;
 }
 
 .stock-level-area h3{
     text-align: center;
-    color: #FFFFFF;
+    color: #2c3e50;
     font-size: 1.2rem;
 }
 
@@ -414,4 +414,101 @@ hr{
 
 dialog h3{
     margin: 0;
+}
+
+.dashboard-cards-area{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    grid-gap: 5vh;
+    justify-content: center;
+}
+
+.dashboard-card{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: #2c3e50;
+}
+
+.dashboard-solo-card-area{
+    display: grid;
+    grid-template-columns: (1, 1fr); 
+    grid-gap: 5vh;
+    justify-content: center;
+}
+
+.dashboard-solo-card{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #B0AEDB;
+    color: #2c3e50;
+}
+
+#color1{
+    background-color: #8AAEC7;
+}
+
+
+#color2{
+    background-color: #D98A99;
+}
+
+
+.dashboard-solo-card select{
+    width: 100%;
+}
+
+.dashboard-solo-card label{
+    margin: 0;
+    padding: 0;
+    align-self: flex-start;
+}
+
+.dashboard-card p{
+    font-weight: bold;
+}
+
+.invisible-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.button-area{
+    display: flex;
+    justify-content: center;
+}
+
+.analysis-area{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    grid-gap: 5vh;
+    align-items: stretch;
+    justify-content: center;
+}
+
+#analysis{
+    margin: 0;
+}
+
+#tax-table{
+    height: 5vh;
+}
+
+.fax-csv-button-area{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 0.3rem;
 }

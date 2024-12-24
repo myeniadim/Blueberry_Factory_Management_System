@@ -190,10 +190,11 @@ const productStockHistory = getProductStockHistoryList();
 const customers = getCustomers();
 const orders = getOrders();
 const ordersHistory = getOrdersHistory();
+const revenueList = orders.filter(o => o.status == "Delivered");
 
 
 
 
 export {storeData, retrieveData, getFarmers, farmers, purchases, 
     changeableDatas, categories, categoryStockHistory, products, 
-    productStockHistory, customers, orders, ordersHistory};
+    productStockHistory, customers, orders, ordersHistory, revenueList};
