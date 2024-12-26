@@ -79,6 +79,7 @@ function addFarmer(event){
     storeData("farmers", farmers);
     addRowToTable(farmer, "farmers-table");
     updateTableRowStyles("farmers-table"), addEditEventListenersToButtons(), addDeleteEventListenersToButtons();
+    updateSelectFarmerOptions();
     document.querySelector("#add-farmer-dialog").close();
 }
 
@@ -108,6 +109,11 @@ function editFarmer(event){
 
 function deleteFarmer(farmerID){
     const index = farmers.findIndex(f => f.id == farmerID);
+    const purchase = purchases.find(p => p.farmer.id == farmerID);
+    if(purchase != null){
+        alert("Cannot delete farmer because there are purchases associated with this farmer");
+        return;
+    }
     farmers.splice(index, 1);
     storeData("farmers", farmers);
     updateFarmersTable(farmers);

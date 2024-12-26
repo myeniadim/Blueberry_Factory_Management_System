@@ -196,13 +196,15 @@ document.querySelector("#delete-category-submit-button").addEventListener("click
         alert("Cannot delete category with stock in it");
         return;
     }else{
-        let newCategories = categories.filter(c => c.id != id);
-        storeData("categories", newCategories);
-        let newCategoryStockHistory = categoryStockHistory.filter(c => c.category.id != id);
-        storeData("categoryStockHistory", newCategoryStockHistory);
-        updateCategoriesTable(newCategories);
-        updateCategoryStockView(newCategories);
-        updateTable(newCategoryStockHistory, "category-stock-history-table");
+        let index = categories.indexOf(category);
+        categories.splice(index, 1);
+        storeData("categories", categories);
+        let index2 = categoryStockHistory.findIndex(c => c.category.id == id);
+        categoryStockHistory.splice(index2, 1);
+        storeData("categoryStockHistory", categoryStockHistory);
+        updateCategoriesTable(categories);
+        updateCategoryStockView(categories);
+        updateTable(categoryStockHistory, "category-stock-history-table");
         document.getElementById("delete-category-dialog").close();
     }
 });

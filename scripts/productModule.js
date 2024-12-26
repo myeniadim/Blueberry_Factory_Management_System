@@ -263,14 +263,17 @@ document.querySelector("#delete-product-submit-button").addEventListener("click"
     let product = products.find(p => p.id == productID);
     let order = orders.find(o => o.product == productID);
     if(order == null && product.stockNum == 0){
-        let tempProducts = products.filter(p => p.id != productID);
-        storeData("products", tempProducts);
-        let newProductStockHistory = productStockHistory.filter(p => p.product.id != productID);
-        storeData("productStockHistory", newProductStockHistory);
+        let index = products.findIndex(p => p.id == productID);
+        products.splice(index, 1);
+        storeData("products", products);
+        let tempProducts = [...products];
+        let index2 = productStockHistory.findIndex(p => p.product.id == productID);
+        productStockHistory.splice(index2, 1);
+        storeData("productStockHistory", productStockHistory);
         updateProductsTable(tempProducts);
         updateProductsStockView(tempProducts);
         updateCategoriesStockView(categories);
-        updateTable(newProductStockHistory, "product-stock-history-table");
+        updateTable(productStockHistory, "product-stock-history-table");
         document.getElementById("delete-product-dialog").close();
     }else if(order != null){
         alert("Cannot delete product with active orders");
